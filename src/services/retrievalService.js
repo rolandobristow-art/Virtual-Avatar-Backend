@@ -2,87 +2,124 @@ import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Required for ES modules to get __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Path to knowledge folder
-const knowledgeDir = path.join(__dirname, "../knowledge");
+const knowledgePath = path.join(__dirname, "../knowledge/knowledge.json");
 
-// Break text into words
-function tokenize(text) {
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s]/g, " ")
-    .split(/\s+/)
-    .filter(Boolean);
+let knowledgeCache = null;
+
+async function loadKnowledgeFile() {
+  if (knowledgeCache) return knowledgeCache;
+
+  const file = await fs.readFile(knowledgePath, "utf-8");
+  const parsed = JSON.parse(file);
+
+  if (Array.isArray(parsed)) {
+    knowledgeCache = parsed;
+  } else if (Array.isArray(parsed.items)) {
+    knowledgeCache = parsed.items;
+  } else if (Array.isArray(parsed.knowledge)) {
+    knowledgeCache = parsed.knowledge;
+  } else {
+    knowledgeCache = [];
+  }
+
+  return knowledgeCache;
 }
 
-// Simple keyword matching score
-function scoreText(query, content) {
-  const queryTokens = tokenize(query);
-  const contentTokens = tokenize(content);
-  const contentSet = new Set(contentTokens);
+function normalize(text = "") {
+  return String(text).toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
+}
 
+function tokenize(text = "") {
+  return normalize(text)
+    .split(" ")
+    .filter((word) => word.length > 2);
+}
+
+function scoreEntry(queryWords, entryText) {
+  const textWords = new Set(tokenize(entryText));
   let score = 0;
 
-  for (const token of queryTokens) {
-    if (contentSet.has(token)) {
-      score += 1;
-    }
+  for (const word of queryWords) {
+    if (textWords.has(word)) score += 1;
   }
 
   return score;
 }
 
-// Split long text into chunks
-function chunkText(text, maxLength = 1200) {
-  const chunks = [];
-  let start = 0;
+function entryToText(entry) {
+  if (typeof entry === "string") return entry;
 
-  while (start < text.length) {
-    chunks.push(text.slice(start, start + maxLength));
-    start += maxLength;
+  if (typeof entry === "object" && entry !== null) {
+    return [
+      entry.title || "",
+      entry.question || "",
+      entry.answer || "",
+      entry.content || "",
+      entry.text || "",
+      entry.description || ""
+    ]
+      .filter(Boolean)
+      .join(" ");
   }
 
-  return chunks;
+  return "";
 }
 
-// Main function used in chat.js
-export async function getRelevantKnowledge(query) {
-  try {
-    const files = await fs.readdir(knowledgeDir);
-    const markdownFiles = files.filter((file) => file.endsWith(".md"));
+export async function getRelevantKnowledge(userMessage, limit = 3) {
+  const knowledge = await loadKnowledgeFile();
 
-    const results = [];
-
-    for (const file of markdownFiles) {
-      const fullPath = path.join(knowledgeDir, file);
-      const content = await fs.readFile(fullPath, "utf-8");
-
-      const chunks = chunkText(content);
-
-      for (const chunk of chunks) {
-        const score = scoreText(query, chunk);
-
-        if (score > 0) {
-          results.push({
-            file,
-            text: chunk,
-            score,
-          });
-        }
-      }
-    }
-
-    // Sort by best match
-    const sorted = results.sort((a, b) => b.score - a.score);
-
-    // Return top matches
-    return sorted.slice(0, 4);
-
-  } catch (error) {
-    console.error("Retrieval error:", error);
+  if (!knowledge.length) {
     return [];
   }
+
+  const queryWords = tokenize(userMessage);
+
+  const ranked = knowledge
+    .map((entry) => {
+      const searchableText = entryToText(entry);
+      return {
+        entry,
+        score: scoreEntry(queryWords, searchableText)
+      };
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((item) => item.entry);
+
+  return ranked;
+}
+
+export async function buildKnowledgeContext(userMessage, limit = 3) {
+  const matches = await getRelevantKnowledge(userMessage, limit);
+
+  if (!matches.length) {
+    return "";
+  }
+
+  return matches
+    .map((entry, index) => {
+      if (typeof entry === "string") {
+        return `Source ${index + 1}: ${entry}`;
+      }
+
+      const parts = [
+        entry.title ? `Title: ${entry.title}` : "",
+        entry.question ? `Question: ${entry.question}` : "",
+        entry.answer ? `Answer: ${entry.answer}` : "",
+        entry.content ? `Content: ${entry.content}` : "",
+        entry.text ? `Text: ${entry.text}` : "",
+        entry.description ? `Description: ${entry.description}` : ""
+      ].filter(Boolean);
+
+      return `Source ${index + 1}:\n${parts.join("\n")}`;
+    })
+    .join("\n\n");
+}
+
+export function clearKnowledgeCache() {
+  knowledgeCache = null;
 }
