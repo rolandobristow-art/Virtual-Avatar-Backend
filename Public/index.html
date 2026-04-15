@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Virtual Avatar Demo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Guide Visitors. Capture Better Leads.</h1>
+      <p class="intro">
+  Virtual Avatar helps businesses guide website visitors with a clear, engaging experience that improves understanding and drives action.
+</p>
+
+      <div id="chatBox" class="chat-box"></div>
+
+      <form id="chatForm" class="chat-form">
+        <input
+          id="messageInput"
+          type="text"
+          placeholder="Type your message here..."
+          autocomplete="off"
+        />
+        <button type="submit">Send</button>
+      </form>
+
+      <form id="leadForm" class="lead-form">
+        <h2>Request More Information</h2>
+
+        <input
+          id="leadName"
+          type="text"
+          placeholder="Your name"
+          required
+        />
+
+        <input
+          id="leadEmail"
+          type="email"
+          placeholder="Your email"
+          required
+        />
+
+        <input
+          id="leadBusiness"
+          type="text"
+          placeholder="Business or website"
+        />
+
+        <textarea
+          id="leadNote"
+          placeholder="Tell us a little about what you need"
+        ></textarea>
+
+        <button type="submit">Submit Details</button>
+        <p id="leadStatus" class="lead-status"></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+{
+  "brand": {
+    "name": "Virtual Avatar",
+    "positioning": "Done-for-you talking website avatars for businesses that want to guide visitors, explain services clearly, and increase conversions.",
+    "tone": [
+      "clear",
+      "warm",
+      "professional",
+      "confident",
+      "direct"
+    ]
+  },
+  "what_it_is": [
+    "A talking avatar placed on a website to greet and guide visitors.",
+    "It helps explain services, answer common questions, and move people toward action.",
+    "It is designed to improve clarity, engagement, and conversions."
+  ],
+  "what_it_is_not": [
+    "It is not positioned as a generic AI assistant.",
+    "It is not just decoration or animation.",
+    "It is not meant to replace real human contact for complex cases."
+  ],
+  "ideal_use_cases": [
+    "Service businesses that need to explain what they do quickly",
+    "Websites with high traffic but low enquiry conversion",
+    "Businesses with offers that visitors often misunderstand",
+    "Landing pages that need a stronger guided call to action",
+    "Agencies wanting an added-value web feature for clients"
+  ],
+  "core_benefits": [
+    "Greets visitors with a clear message",
+    "Explains services in a simple, engaging way",
+    "Keeps people on the page longer",
+    "Guides visitors toward action",
+    "Helps businesses stand out from static websites"
+  ],
+  "common_questions": {
+    "what_does_it_do": "A Virtual Avatar speaks directly to website visitors, explains what the business offers, answers common questions, and guides visitors toward the next step.",
+    "why_not_just_text": "Most visitors skim websites. A clear speaking avatar can communicate faster, hold attention better, and guide visitors more effectively than blocks of text alone.",
+    "is_it_custom": "Yes. The avatar message, script, purpose, and placement are shaped around the business and its goals.",
+    "who_is_it_for": "It works well for businesses that need to build trust quickly and explain services clearly."
+  },
+  "offers": [
+    {
+      "name": "Engage",
+      "price": "R1,800 setup + R499/month",
+      "summary": "1 stock avatar, up to 60 seconds, basic embed setup."
+    },
+    {
+      "name": "Convert",
+      "price": "R4,500 setup + R699/month",
+      "summary": "3 avatars, up to 60 seconds each, monthly refresh and basic analytics."
+    },
+    {
+      "name": "Agency",
+      "price": "R9,500 setup + R899/month",
+      "summary": "10 avatars, up to 90 seconds each, suitable for agencies or multiple client deployments."
+    }
+  ],
+  "cta": {
+    "primary": "Book a demo",
+    "secondary": "Request pricing",
+    "other": [
+      "See how it could work on your website",
+      "Let us build the right avatar flow for your business"
+    ]
+  },
+  "style_rules": [
+    "Do not call it an assistant",
+    "Do not say bring your website to life",
+    "Lead with business outcomes",
+    "Keep explanations simple and useful",
+    "Use confident, non-hype language"
+  ]
+}
