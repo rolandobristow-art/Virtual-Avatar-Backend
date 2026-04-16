@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const knowledgePath = path.join(__dirname, "../knowledge/knowledge.json");
+const knowledgePath = path.join(__dirname, "../data/knowledge.json");
 
 let knowledgeCache = null;
 

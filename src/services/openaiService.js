@@ -2,22 +2,32 @@ import dotenv from "dotenv";
 import path from "path";
 import OpenAI from "openai";
 import fs from "fs";
+import { fileURLToPath } from "url";
 
-dotenv.config({
-  path: path.resolve(".env")
-});
+// Load env (works locally, safe on Render)
+dotenv.config();
 
-const knowledgePath = path.resolve("src/data/knowledge.json");
-const knowledge = JSON.parse(fs.readFileSync(knowledgePath, "utf-8"));
+// Fix __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// Correct path to knowledge file
+const knowledgePath = path.join(__dirname, "../data/knowledge.json");
+
+// Load knowledge
+const knowledge = JSON.parse(
+  fs.readFileSync(knowledgePath, "utf-8")
+);
+
+// Check API key
 if (!process.env.OPENAI_API_KEY) {
-  throw new Error("OPENAI_API_KEY is missing from .env");
+  throw new Error("OPENAI_API_KEY is missing");
 }
 
+// OpenAI client
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
-
 function buildSystemPrompt() {
   return `
 You are the website guide for Virtual Avatar.
