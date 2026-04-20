@@ -1,11 +1,16 @@
 import express from "express";
 import fs from "fs";
 import path from "path";
-
+import { fileURLToPath } from "url";
 
 const router = express.Router();
 
-const leadsDir = path.resolve("src/data");
+// Fix __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Correct paths (NO src/... hardcoding)
+const leadsDir = path.join(__dirname, "../data");
 const leadsFile = path.join(leadsDir, "leads.json");
 
 function ensureLeadsFile() {

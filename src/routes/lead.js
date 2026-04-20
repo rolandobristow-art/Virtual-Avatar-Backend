@@ -1,11 +1,15 @@
 import express from "express";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import { appendToSheet } from "../services/googleSheets.js";
 
 const router = express.Router();
 
-const leadsDir = path.resolve("src/data");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const leadsDir = path.join(__dirname, "../data");
 const leadsFile = path.join(leadsDir, "leads.json");
 
 function ensureLeadsFile() {
