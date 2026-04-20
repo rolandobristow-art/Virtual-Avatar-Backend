@@ -15,9 +15,7 @@ const __dirname = path.dirname(__filename);
 const knowledgePath = path.join(__dirname, "../data/knowledge.json");
 
 // Load knowledge
-const knowledge = JSON.parse(
-  fs.readFileSync(knowledgePath, "utf-8")
-);
+const knowledge = [];
 
 // Check API key
 if (!process.env.OPENAI_API_KEY) {
@@ -79,7 +77,7 @@ Qualification is handled separately by the application.
 You must NOT begin qualification yourself.
 
 Business knowledge:
-${JSON.stringify(knowledge, null, 2)}
+(No internal knowledge loaded for this demo)
 `.trim();
 }
 function buildConversationInput(history, message) {
