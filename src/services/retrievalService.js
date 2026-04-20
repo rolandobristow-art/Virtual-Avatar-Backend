@@ -29,7 +29,11 @@ async function loadKnowledgeFile() {
 }
 
 function normalize(text = "") {
-  return String(text).toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
+  return String(text)
+    .toLowerCase()
+    .replace(/[^\w\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function tokenize(text = "") {
