@@ -3,7 +3,7 @@ const chatForm = document.getElementById("chatForm");
 const messageInput = document.getElementById("messageInput");
 
 const history = [];
-const API_URL = "http://localhost:3000/api/chat";
+const API_URL = "https://virtual-avatar-backend.onrender.com/api/chat";
 
 function getSessionId() {
   let sessionId = localStorage.getItem("va_session_id");
