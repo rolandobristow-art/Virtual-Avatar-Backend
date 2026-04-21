@@ -4,17 +4,17 @@ const router = express.Router();
 
 router.get("/token", async (req, res) => {
   try {
-    const response = await fetch("https://api.heygen.com/v1/streaming.create_token", {
+    const response = await fetch("https://api.liveavatar.com/v1/sessions/token", {
       method: "POST",
       headers: {
-        "X-API-KEY": process.env.HEYGEN_API_KEY,
+        "X-API-KEY": process.env.LIVEAVATAR_API_KEY,
         "Content-Type": "application/json"
       }
     });
 
     const rawText = await response.text();
-    console.log("HeyGen token status:", response.status);
-    console.log("HeyGen token response:", rawText);
+    console.log("LiveAvatar token status:", response.status);
+    console.log("LiveAvatar token response:", rawText);
 
     let data = {};
     try {
@@ -25,18 +25,16 @@ router.get("/token", async (req, res) => {
 
     if (!response.ok) {
       return res.status(response.status).json({
-        error: "Failed to get HeyGen token",
+        error: "Failed to get LiveAvatar token",
         details: data
       });
     }
 
-    return res.json({
-      token: data.data?.token || data.token
-    });
+    return res.json(data);
   } catch (error) {
-    console.error("Token route error:", error);
+    console.error("LiveAvatar token route error:", error);
     return res.status(500).json({
-      error: "Could not connect to HeyGen",
+      error: "Could not connect to LiveAvatar",
       details: error.message
     });
   }
