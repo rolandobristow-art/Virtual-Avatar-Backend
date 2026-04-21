@@ -60,25 +60,30 @@ async function sendMessage(message) {
   setLoading(true);
   addTypingIndicator();
 
-  try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        message: cleanMessage,
-        sessionId: getSessionId(),
-        history
-      })
-    });
+  try {const response = await fetch(API_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    message: cleanMessage,
+    sessionId: getSessionId(),
+    history
+  })
+});
 
-    const data = await response.json();
+let data = {};
+try {
+  data = await response.json();
+} catch {
+  data = {};
+}
 
-    removeTypingIndicator();
+removeTypingIndicator();
 
-    if (!response.ok) {
-      throw new Error(data.error || "Something went wrong.");
+if (!response.ok) {
+  throw new Error(data.error || "Something went wrong.");
+
     }
 
     const reply =

@@ -1,6 +1,7 @@
 import express from "express";
 import { getChatResponse } from "../services/openaiService.js";
 import { getSession } from "../store/sessionStore.js";
+import { saveLead } from "../services/leadService.js";
 import {
   shouldOfferQualification,
   startQualificationFlow,
@@ -12,7 +13,6 @@ import {
   isNoResponse,
   handleQualificationReply,
 } from "../services/qualificationService.js";
-
 
 const router = express.Router();
 
@@ -76,22 +76,22 @@ router.post("/", async (req, res) => {
 
     const reply = await getChatResponse({ message, history });
 
-   if (shouldOfferQualification(message)) {
-  markQualificationInvited(session);
+    if (shouldOfferQualification(message)) {
+      markQualificationInvited(session);
 
-  const alreadyInviting =
-    reply.toLowerCase().includes("map out") ||
-    reply.toLowerCase().includes("few quick questions");
+      const alreadyInviting =
+        reply.toLowerCase().includes("map out") ||
+        reply.toLowerCase().includes("few quick questions");
 
-  const finalReply = alreadyInviting
-    ? reply
-    : `${reply}\n\nThe real value comes from setting this up around your business and how your website converts.\n\nI can map out exactly how this would work for your business — it’ll just take a few quick questions.`;
+      const finalReply = alreadyInviting
+        ? reply
+        : `${reply}\n\nThe real value comes from setting this up around your business and how your website converts.\n\nI can map out exactly how this would work for your business — it’ll just take a few quick questions.`;
 
-  return res.json({
-    reply: finalReply,
-    mode: "invite_qualification",
-  });
-}
+      return res.json({
+        reply: finalReply,
+        mode: "invite_qualification",
+      });
+    }
 
     return res.json({
       reply,

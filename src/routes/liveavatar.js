@@ -2,37 +2,33 @@ import express from "express";
 
 const router = express.Router();
 
-router.get("/embed", async (req, res) => {
+// Get HeyGen streaming session token
+router.get("/token", async (req, res) => {
   try {
-    const response = await fetch("https://api.liveavatar.com/v2/embeddings", {
+    const response = await fetch("https://api.heygen.com/v1/streaming.create_token", {
       method: "POST",
       headers: {
-        "X-API-KEY": process.env.LIVEAVATAR_API_KEY,
+        "X-Api-Key": process.env.HEYGEN_API_KEY,
         "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        avatar_id: "65f9e3c9-d48b-4118-b73a-4ae2e3cbb8f0",
-        context_id: "158f5d55-2d4f-11f1-8d28-066a7fa2e369",
-        is_sandbox: true
-      })
+      }
     });
 
-    const rawText = await response.text();
-    console.log("LiveAvatar status:", response.status);
-    console.log("LiveAvatar response:", rawText);
+    const data = await response.json();
 
-    let parsed;
-    try {
-      parsed = JSON.parse(rawText);
-    } catch {
-      parsed = { raw: rawText };
+    if (!response.ok) {
+      console.error("HeyGen token error:", data);
+      return res.status(500).json({
+        error: "Failed to get HeyGen token"
+      });
     }
 
-    return res.status(response.status).json(parsed);
+    return res.json({
+      token: data.data.token
+    });
   } catch (error) {
-    console.error("LiveAvatar embed error:", error);
+    console.error("Token route error:", error);
     return res.status(500).json({
-      error: "Failed to reach LiveAvatar",
+      error: "Could not connect to HeyGen",
       details: error.message
     });
   }

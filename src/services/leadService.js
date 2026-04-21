@@ -1,15 +1,12 @@
-import express from "express";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-
-const router = express.Router();
 
 // Fix __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Correct paths (NO src/... hardcoding)
+// Data path
 const leadsDir = path.join(__dirname, "../data");
 const leadsFile = path.join(leadsDir, "leads.json");
 
@@ -23,64 +20,35 @@ function ensureLeadsFile() {
   }
 }
 
-router.post("/", async (req, res) => {
-  try {
-    const {
-      name,
-      email,
-      business,
-      note,
-      intent,
-      problem,
-      websiteStatus,
-      finalAction
-    } = req.body;
+export function saveLead(answers = {}) {
+  ensureLeadsFile();
 
-    if (!name || !email) {
-      return res.status(400).json({
-        error: "Name and email are required."
-      });
-    }
+  const raw = fs.readFileSync(leadsFile, "utf-8");
+  const leads = JSON.parse(raw);
 
-    ensureLeadsFile();
+  const newLead = {
+    id: "lead_" + Date.now(),
+    name: answers.name ? String(answers.name).trim() : "",
+    email: answers.email ? String(answers.email).trim() : "",
+    business: answers.business ? String(answers.business).trim() : "",
+    intent: answers.intent ? String(answers.intent).trim() : "",
+    problem: answers.problem ? String(answers.problem).trim() : "",
+    websiteStatus: answers.websiteStatus ? String(answers.websiteStatus).trim() : "",
+    finalAction: answers.finalAction ? String(answers.finalAction).trim() : "",
+    note: answers.note ? String(answers.note).trim() : "",
+    createdAt: new Date().toISOString()
+  };
 
-    const raw = fs.readFileSync(leadsFile, "utf-8");
-    const leads = JSON.parse(raw);
+  leads.push(newLead);
 
-    const newLead = {
-      id: Date.now(),
-      name: String(name).trim(),
-      email: String(email).trim(),
-      business: business ? String(business).trim() : "",
-      intent: intent ? String(intent).trim() : "",
-      problem: problem ? String(problem).trim() : "",
-      websiteStatus: websiteStatus ? String(websiteStatus).trim() : "",
-      finalAction: finalAction ? String(finalAction).trim() : "",
-      note: note ? String(note).trim() : "",
-      createdAt: new Date().toISOString()
-    };
+  fs.writeFileSync(leadsFile, JSON.stringify(leads, null, 2), "utf-8");
 
-    leads.push(newLead);
+  return newLead;
+}
 
-    fs.writeFileSync(leadsFile, JSON.stringify(leads, null, 2), "utf-8");
+export function getLeads() {
+  ensureLeadsFile();
 
-    try {
-      await appendToSheet(newLead);
-      console.log("Lead also saved to Google Sheets.");
-    } catch (sheetError) {
-      console.error("Google Sheets save error:", sheetError.message);
-    }
-
-    return res.json({
-      success: true,
-      message: "Lead captured successfully."
-    });
-  } catch (error) {
-    console.error("Lead route error:", error);
-    return res.status(500).json({
-      error: "Could not save lead."
-    });
-  }
-});
-
-export default router;
+  const raw = fs.readFileSync(leadsFile, "utf-8");
+  return JSON.parse(raw);
+}
