@@ -2,8 +2,13 @@ const chatBox = document.getElementById("chatBox");
 const chatForm = document.getElementById("chatForm");
 const messageInput = document.getElementById("messageInput");
 
+const startBtn = document.getElementById("startAvatarBtn");
+const avatarContainer = document.getElementById("avatarContainer");
+const avatarStatus = document.getElementById("avatarStatus");
+
 const history = [];
 const API_URL = "https://virtual-avatar-backend.onrender.com/api/chat";
+const AVATAR_API = "https://virtual-avatar-backend.onrender.com/api/liveavatar/token";
 
 function getSessionId() {
   let sessionId = localStorage.getItem("va_session_id");
@@ -108,6 +113,51 @@ function sendPrompt(promptText) {
   sendMessage(promptText);
 }
 
+async function startAvatar() {
+  try {
+    if (!avatarStatus || !avatarContainer) return;
+
+    avatarStatus.textContent = "Starting avatar...";
+
+    const res = await fetch(AVATAR_API);
+    let data = {};
+
+    try {
+      data = await res.json();
+    } catch {
+      data = {};
+    }
+
+    if (!res.ok) {
+      throw new Error(data.error || "Failed to get avatar session.");
+    }
+
+    const sessionId = data?.data?.session_id;
+
+    if (!sessionId) {
+      throw new Error("No session ID returned.");
+    }
+
+    const iframe = document.createElement("iframe");
+    iframe.src = `https://embed.liveavatar.com/v1/${sessionId}`;
+    iframe.allow = "microphone; camera";
+    iframe.setAttribute("allowfullscreen", "true");
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    iframe.style.border = "none";
+
+    avatarContainer.innerHTML = "";
+    avatarContainer.appendChild(iframe);
+
+    avatarStatus.textContent = "Avatar live";
+  } catch (err) {
+    console.error("Avatar start error:", err);
+    if (avatarStatus) {
+      avatarStatus.textContent = "Failed to start avatar";
+    }
+  }
+}
+
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -118,39 +168,10 @@ chatForm.addEventListener("submit", async (e) => {
   await sendMessage(message);
 });
 
-const AVATAR_API = "https://virtual-avatar-backend.onrender.com/api/liveavatar/token";
-
-const startBtn = document.getElementById("startAvatarBtn");
-const avatarContainer = document.getElementById("avatarContainer");
-const avatarStatus = document.getElementById("avatarStatus");
-
 if (startBtn) {
   startBtn.addEventListener("click", startAvatar);
 }
 
-async function startAvatar() {
-  try {
-    avatarStatus.textContent = "Starting avatar...";
-
-    const res = await fetch(AVATAR_API);
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error("Failed to get token");
-    }
-
-    const sessionToken = data.data.session_token;
-
-    // TEMP: just show token success
-    avatarStatus.textContent = "Avatar session ready";
-
-    console.log("Session token:", sessionToken);
-
-  } catch (err) {
-    console.error(err);
-    avatarStatus.textContent = "Failed to start avatar";
-  }
-}
 window.sendPrompt = sendPrompt;
 
 window.addEventListener("load", () => {
