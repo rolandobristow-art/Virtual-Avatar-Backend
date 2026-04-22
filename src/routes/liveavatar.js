@@ -9,22 +9,22 @@ router.get("/token", async (req, res) => {
       headers: {
         "X-API-KEY": process.env.LIVEAVATAR_API_KEY,
         "Content-Type": "application/json"
-      }
+      },
+      body: JSON.stringify({
+        mode: "FULL",
+        avatar_id: "65f9e3c9-d48b-4118-b73a-4ae2e3cbb8f0",
+        avatar_persona: {
+          voice_id: "default",
+          context_id: "158f5d55-2d4f-11f1-8d28-066a7fa2e369",
+          language: "en"
+        }
+      })
     });
 
-    const rawText = await response.text();
-    console.log("LiveAvatar token status:", response.status);
-    console.log("LiveAvatar token response:", rawText);
-
-    let data = {};
-    try {
-      data = JSON.parse(rawText);
-    } catch {
-      data = { raw: rawText };
-    }
+    const data = await response.json();
 
     if (!response.ok) {
-      return res.status(response.status).json({
+      return res.status(500).json({
         error: "Failed to get LiveAvatar token",
         details: data
       });
@@ -32,7 +32,6 @@ router.get("/token", async (req, res) => {
 
     return res.json(data);
   } catch (error) {
-    console.error("LiveAvatar token route error:", error);
     return res.status(500).json({
       error: "Could not connect to LiveAvatar",
       details: error.message
