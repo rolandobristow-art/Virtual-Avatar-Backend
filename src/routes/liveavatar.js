@@ -19,7 +19,6 @@ router.get("/token", async (req, res) => {
     language: "en"
   }
 })
-      })
     });
 
     const data = await response.json();
