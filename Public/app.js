@@ -60,35 +60,34 @@ async function sendMessage(message) {
   setLoading(true);
   addTypingIndicator();
 
-  try {const response = await fetch(API_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    message: cleanMessage,
-    sessionId: getSessionId(),
-    history
-  })
-});
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: cleanMessage,
+        sessionId: getSessionId(),
+        history
+      })
+    });
 
-let data = {};
-try {
-  data = await response.json();
-} catch {
-  data = {};
-}
+    let data = {};
+    try {
+      data = await response.json();
+    } catch {
+      data = {};
+    }
 
-removeTypingIndicator();
+    removeTypingIndicator();
 
-if (!response.ok) {
-  throw new Error(data.error || "Something went wrong.");
-
+    if (!response.ok) {
+      throw new Error(data.error || "Something went wrong.");
     }
 
     const reply =
-      data.reply ||
-      "Sorry, I could not generate a response right now.";
+      data.reply || "Sorry, I could not generate a response right now.";
 
     addMessage("assistant", reply);
     history.push({ role: "assistant", content: reply });
@@ -119,6 +118,39 @@ chatForm.addEventListener("submit", async (e) => {
   await sendMessage(message);
 });
 
+const AVATAR_API = "https://virtual-avatar-backend.onrender.com/api/liveavatar/token";
+
+const startBtn = document.getElementById("startAvatarBtn");
+const avatarContainer = document.getElementById("avatarContainer");
+const avatarStatus = document.getElementById("avatarStatus");
+
+if (startBtn) {
+  startBtn.addEventListener("click", startAvatar);
+}
+
+async function startAvatar() {
+  try {
+    avatarStatus.textContent = "Starting avatar...";
+
+    const res = await fetch(AVATAR_API);
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error("Failed to get token");
+    }
+
+    const sessionToken = data.data.session_token;
+
+    // TEMP: just show token success
+    avatarStatus.textContent = "Avatar session ready";
+
+    console.log("Session token:", sessionToken);
+
+  } catch (err) {
+    console.error(err);
+    avatarStatus.textContent = "Failed to start avatar";
+  }
+}
 window.sendPrompt = sendPrompt;
 
 window.addEventListener("load", () => {
