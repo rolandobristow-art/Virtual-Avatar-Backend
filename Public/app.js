@@ -3,12 +3,12 @@ const chatForm = document.getElementById("chatForm");
 const messageInput = document.getElementById("messageInput");
 
 const startBtn = document.getElementById("startAvatarBtn");
-const avatarContainer = document.getElementById("avatarContainer");
 const avatarStatus = document.getElementById("avatarStatus");
 
 const history = [];
 const API_URL = "https://virtual-avatar-backend.onrender.com/api/chat";
-const AVATAR_API = "https://virtual-avatar-backend.onrender.com/api/liveavatar/token";
+const AVATAR_TOKEN_API = "https://virtual-avatar-backend.onrender.com/api/liveavatar/token";
+const AVATAR_START_API = "https://virtual-avatar-backend.onrender.com/api/liveavatar/start";
 
 function getSessionId() {
   let sessionId = localStorage.getItem("va_session_id");
@@ -115,41 +115,59 @@ function sendPrompt(promptText) {
 
 async function startAvatar() {
   try {
-    if (!avatarStatus || !avatarContainer) return;
+    if (!avatarStatus) return;
 
-    avatarStatus.textContent = "Starting avatar...";
+    avatarStatus.textContent = "Getting avatar token...";
 
-    const res = await fetch(AVATAR_API);
-    let data = {};
+    const tokenRes = await fetch(AVATAR_TOKEN_API);
+    let tokenData = {};
 
     try {
-      data = await res.json();
+      tokenData = await tokenRes.json();
     } catch {
-      data = {};
+      tokenData = {};
     }
 
-    if (!res.ok) {
-      throw new Error(data.error || "Failed to get avatar session.");
+    if (!tokenRes.ok) {
+      throw new Error(tokenData.error || "Failed to get avatar token.");
     }
 
-    const sessionId = data?.data?.session_id;
+    const sessionId = tokenData?.data?.session_id;
+    const sessionToken = tokenData?.data?.session_token;
 
-    if (!sessionId) {
-      throw new Error("No session ID returned.");
+    if (!sessionId || !sessionToken) {
+      throw new Error("Missing avatar session details.");
     }
 
-    const iframe = document.createElement("iframe");
-    iframe.src = `https://embed.liveavatar.com/v1/${sessionId}`;
-    iframe.allow = "microphone; camera";
-    iframe.setAttribute("allowfullscreen", "true");
-    iframe.style.width = "100%";
-    iframe.style.height = "100%";
-    iframe.style.border = "none";
+    avatarStatus.textContent = "Starting avatar session...";
 
-    avatarContainer.innerHTML = "";
-    avatarContainer.appendChild(iframe);
+    const startRes = await fetch(AVATAR_START_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        session_id: sessionId,
+        session_token: sessionToken
+      })
+    });
 
-    avatarStatus.textContent = "Avatar live";
+    let startData = {};
+
+    try {
+      startData = await startRes.json();
+    } catch {
+      startData = {};
+    }
+
+    if (!startRes.ok) {
+      throw new Error(startData.error || "Failed to start avatar session.");
+    }
+
+    console.log("LiveAvatar token response:", tokenData);
+    console.log("LiveAvatar start response:", startData);
+
+    avatarStatus.textContent = "Avatar session created";
   } catch (err) {
     console.error("Avatar start error:", err);
     if (avatarStatus) {
