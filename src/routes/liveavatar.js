@@ -10,14 +10,15 @@ router.get("/token", async (req, res) => {
         "X-API-KEY": process.env.LIVEAVATAR_API_KEY,
         "Content-Type": "application/json"
       },
-     body: JSON.stringify({
+    body: JSON.stringify({
   mode: "FULL",
   avatar_id: "65f9e3c9-d48b-4118-b73a-4ae2e3cbb8f0",
   avatar_persona: {
     voice_id: "4f3b1e99-b580-4f05-9b67-a5f585be0232",
     context_id: "158f5d55-2d4f-11f1-8d28-066a7fa2e369",
     language: "en"
-     }
+  }
+})
       })
     });
 
