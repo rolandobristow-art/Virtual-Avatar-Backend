@@ -2,9 +2,10 @@ import express from "express";
 
 const router = express.Router();
 
+// ✅ Your correct avatar configuration
 const LIVEAVATAR_CONFIG = {
-  mode: "FULL",
-  avatar_id: "65f9e3c9-d48b-4118-b73a-4ae2e3cbb8f0",
+  mode: "LITE",                                      // More stable for embed
+  avatar_id: "8175dfc2-7858-49d6-b5fa-0c135d1c4bad", // ← Your cat avatar
   avatar_persona: {
     voice_id: "4f3b1e99-b580-4f05-9b67-a5f585be0232",
     context_id: "158f5d55-2d4f-11f1-8d28-066a7fa2e369",
@@ -12,6 +13,7 @@ const LIVEAVATAR_CONFIG = {
   }
 };
 
+// ====================== TOKEN ROUTE ======================
 router.get("/token", async (req, res) => {
   try {
     const response = await fetch("https://api.liveavatar.com/v1/sessions/token", {
@@ -25,6 +27,8 @@ router.get("/token", async (req, res) => {
 
     const data = await response.json();
 
+    console.log("LiveAvatar Token Response:", data);
+
     if (!response.ok) {
       return res.status(response.status).json({
         error: "Failed to get LiveAvatar token",
@@ -32,8 +36,14 @@ router.get("/token", async (req, res) => {
       });
     }
 
-    return res.json(data);
+    return res.json({
+      code: 1000,
+      data: data.data || data,
+      message: "Session token created successfully"
+    });
+
   } catch (error) {
+    console.error("LiveAvatar error:", error);
     return res.status(500).json({
       error: "Could not connect to LiveAvatar",
       details: error.message
@@ -41,6 +51,7 @@ router.get("/token", async (req, res) => {
   }
 });
 
+// ====================== START ROUTE (kept for future use) ======================
 router.post("/start", async (req, res) => {
   try {
     const { session_id, session_token } = req.body;
@@ -73,7 +84,9 @@ router.post("/start", async (req, res) => {
     }
 
     return res.json(data);
+
   } catch (error) {
+    console.error("LiveAvatar start error:", error);
     return res.status(500).json({
       error: "Could not start LiveAvatar session",
       details: error.message
