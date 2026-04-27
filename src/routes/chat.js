@@ -18,32 +18,29 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
   try {
-    console.log("Chat route hit. Body:", req.body);
-
     const { message, history = [], sessionId } = req.body;
 
-    if (!message || typeof message !== "string" || !sessionId) {
+    if (!message?.trim() || !sessionId) {
       return res.status(400).json({
         error: "message and sessionId are required.",
       });
     }
 
     const session = getSession(sessionId);
+    const cleanMessage = message.trim();
 
+    // ====================== QUALIFICATION FLOW ======================
     if (isQualificationActive(session)) {
-      const result = handleQualificationReply(session, message);
+      const result = handleQualificationReply(session, cleanMessage);
 
       if (typeof result === "string") {
-        return res.json({
-          reply: result,
-          mode: "qualification",
-        });
+        return res.json({ reply: result, mode: "qualification" });
       }
 
       if (result?.done) {
         const savedLead = saveLead(result.answers);
-
-        console.log("Lead saved:", savedLead);
+        
+        console.log(`🎯 Lead captured: ${savedLead?.name || savedLead?.email}`);
 
         return res.json({
           reply: result.message,
@@ -53,39 +50,38 @@ router.post("/", async (req, res) => {
       }
     }
 
+    // Handle user response to qualification invitation
     if (isQualificationInvited(session)) {
-      if (isYesResponse(message)) {
+      if (isYesResponse(cleanMessage)) {
         const firstQuestion = startQualificationFlow(session);
-
         return res.json({
           reply: firstQuestion,
           mode: "qualification",
         });
       }
 
-      if (isNoResponse(message)) {
+      if (isNoResponse(cleanMessage)) {
         clearQualificationInvite(session);
-
         return res.json({
-          reply:
-            "No problem. I’m happy to answer any questions about how Virtual Avatar works, where it fits on a website, or what kind of results it can help support.",
+          reply: "No problem at all. I'm happy to answer any questions you have about how Virtual Avatar works.",
           mode: "chat",
         });
       }
     }
 
-    const reply = await getChatResponse({ message, history });
+    // ====================== NORMAL CHAT FLOW ======================
+    const reply = await getChatResponse({ 
+      message: cleanMessage, 
+      history 
+    });
 
-    if (shouldOfferQualification(message)) {
+    // Smart qualification invitation
+    if (shouldOfferQualification(cleanMessage)) {
       markQualificationInvited(session);
 
-      const alreadyInviting =
-        reply.toLowerCase().includes("map out") ||
-        reply.toLowerCase().includes("few quick questions");
-
-      const finalReply = alreadyInviting
-        ? reply
-        : `${reply}\n\nThe real value comes from setting this up around your business and how your website converts.\n\nI can map out exactly how this would work for your business — it’ll just take a few quick questions.`;
+      const finalReply = reply.includes("few quick questions") 
+        ? reply 
+        : `${reply}\n\nI can map out exactly how this would work for your business — it’ll just take a few quick questions.`;
 
       return res.json({
         reply: finalReply,
@@ -93,14 +89,18 @@ router.post("/", async (req, res) => {
       });
     }
 
+    // Default response
     return res.json({
       reply,
       mode: "chat",
     });
+
   } catch (error) {
     console.error("Chat route error:", error);
+    
     return res.status(500).json({
-      error: error.message || "Server error while processing chat request.",
+      error: "Something went wrong while processing your message.",
+      reply: "Sorry, I had a technical issue. Could you please try again?",
     });
   }
 });
