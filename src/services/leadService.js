@@ -6,21 +6,27 @@ import nodemailer from "nodemailer";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Use your actual filename
 const leadsDir = path.join(__dirname, "../data");
-const leadsFile = path.join(leadsDir, "leads.json");
+const leadsFile = path.join(leadsDir, "lead.json");   // ← Changed to lead.json
 
 // ====================== EMAIL SETUP ======================
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER,        // Your Gmail address
-    pass: process.env.EMAIL_APP_PASSWORD // App Password (not normal password)
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_APP_PASSWORD
   }
 });
 
 function ensureLeadsFile() {
-  if (!fs.existsSync(leadsDir)) fs.mkdirSync(leadsDir, { recursive: true });
-  if (!fs.existsSync(leadsFile)) fs.writeFileSync(leadsFile, "[]", "utf-8");
+  if (!fs.existsSync(leadsDir)) {
+    fs.mkdirSync(leadsDir, { recursive: true });
+  }
+  if (!fs.existsSync(leadsFile)) {
+    fs.writeFileSync(leadsFile, "[]", "utf-8");
+    console.log("✅ lead.json file created");
+  }
 }
 
 export async function saveLead(answers = {}) {
@@ -47,10 +53,9 @@ export async function saveLead(answers = {}) {
     leads.push(newLead);
     fs.writeFileSync(leadsFile, JSON.stringify(leads, null, 2), "utf-8");
 
-    // Send Email Notification
     await sendLeadEmail(newLead);
 
-    console.log(`✅ Lead saved and emailed: ${newLead.name || newLead.email}`);
+    console.log(`✅ Lead saved: ${newLead.name || newLead.email}`);
     return newLead;
 
   } catch (err) {
@@ -62,8 +67,8 @@ export async function saveLead(answers = {}) {
 async function sendLeadEmail(lead) {
   try {
     await transporter.sendMail({
-      from: `"Virtual Avatar Leads" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER,   // Send to yourself
+      from: `"Virtual Avatar" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
       subject: `New Lead: ${lead.name || "Anonymous"}`,
       html: `
         <h2>New Lead Captured</h2>
@@ -71,16 +76,12 @@ async function sendLeadEmail(lead) {
         <p><strong>Email:</strong> ${lead.email}</p>
         <p><strong>Business:</strong> ${lead.business}</p>
         <p><strong>Intent:</strong> ${lead.intent}</p>
-        <p><strong>Problem:</strong> ${lead.problem}</p>
-        <p><strong>Final Action:</strong> ${lead.finalAction}</p>
         <p><strong>Time:</strong> ${lead.timestamp}</p>
-        <hr>
-        <p><em>Check leads.json for full details.</em></p>
       `
     });
-    console.log("📧 Lead email sent successfully");
-  } catch (emailErr) {
-    console.error("❌ Failed to send lead email:", emailErr.message);
+    console.log("📧 Lead email sent");
+  } catch (e) {
+    console.error("Email failed:", e.message);
   }
 }
 
