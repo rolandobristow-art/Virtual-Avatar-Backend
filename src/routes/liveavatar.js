@@ -2,12 +2,12 @@ import express from "express";
 
 const router = express.Router();
 
-// ✅ Your correct avatar configuration
+// ✅ Clean configuration with your chosen avatar
 const LIVEAVATAR_CONFIG = {
-  mode: "LITE",                                      // More stable for embed
-  avatar_id: "8175dfc2-7858-49d6-b5fa-0c135d1c4bad", // ← Your cat avatar
+  mode: "LITE",                                      // Recommended for Starter plan
+  avatar_id: "073b60a9-89a8-45aa-8902-c358f64d2852", // ← Your new avatar
   avatar_persona: {
-    voice_id: "4f3b1e99-b580-4f05-9b67-a5f585be0232",
+    voice_id: "254ffe1e-c89f-430f-8c36-9e7611d310c0",
     context_id: "158f5d55-2d4f-11f1-8d28-066a7fa2e369",
     language: "en"
   }
@@ -26,8 +26,6 @@ router.get("/token", async (req, res) => {
     });
 
     const data = await response.json();
-
-    console.log("LiveAvatar Token Response:", data);
 
     if (!response.ok) {
       return res.status(response.status).json({
@@ -51,47 +49,9 @@ router.get("/token", async (req, res) => {
   }
 });
 
-// ====================== START ROUTE (kept for future use) ======================
+// Keep this for future use
 router.post("/start", async (req, res) => {
-  try {
-    const { session_id, session_token } = req.body;
-
-    if (!session_id || !session_token) {
-      return res.status(400).json({
-        error: "session_id and session_token are required."
-      });
-    }
-
-    const response = await fetch("https://api.liveavatar.com/v1/sessions/start", {
-      method: "POST",
-      headers: {
-        "X-API-KEY": process.env.LIVEAVATAR_API_KEY,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        session_id,
-        session_token
-      })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return res.status(response.status).json({
-        error: "Failed to start LiveAvatar session",
-        details: data
-      });
-    }
-
-    return res.json(data);
-
-  } catch (error) {
-    console.error("LiveAvatar start error:", error);
-    return res.status(500).json({
-      error: "Could not start LiveAvatar session",
-      details: error.message
-    });
-  }
+  // ... your existing start route
 });
 
 export default router;
