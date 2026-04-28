@@ -21,9 +21,7 @@ router.post("/", async (req, res) => {
     const { message, history = [], sessionId } = req.body;
 
     if (!message?.trim() || !sessionId) {
-      return res.status(400).json({
-        error: "message and sessionId are required.",
-      });
+      return res.status(400).json({ error: "message and sessionId are required." });
     }
 
     const session = getSession(sessionId);
@@ -38,19 +36,20 @@ router.post("/", async (req, res) => {
       }
 
       if (result?.done) {
+        // Save the lead
         const savedLead = saveLead(result.answers);
-        
+
         console.log(`🎯 Lead captured: ${savedLead?.name || savedLead?.email}`);
 
         return res.json({
-          reply: result.message,
+          reply: result.message || "Thank you! I've noted your details.",
           mode: "qualification_complete",
           lead: savedLead,
         });
       }
     }
 
-    // Handle user response to qualification invitation
+    // Handle response to qualification invitation
     if (isQualificationInvited(session)) {
       if (isYesResponse(cleanMessage)) {
         const firstQuestion = startQualificationFlow(session);
@@ -63,19 +62,19 @@ router.post("/", async (req, res) => {
       if (isNoResponse(cleanMessage)) {
         clearQualificationInvite(session);
         return res.json({
-          reply: "No problem at all. I'm happy to answer any questions you have about how Virtual Avatar works.",
+          reply: "No problem at all. I'm happy to answer any questions you have about Virtual Avatar.",
           mode: "chat",
         });
       }
     }
 
-    // ====================== NORMAL CHAT FLOW ======================
+    // ====================== NORMAL CHAT ======================
     const reply = await getChatResponse({ 
       message: cleanMessage, 
       history 
     });
 
-    // Smart qualification invitation
+    // Smart qualification offer
     if (shouldOfferQualification(cleanMessage)) {
       markQualificationInvited(session);
 
@@ -97,10 +96,9 @@ router.post("/", async (req, res) => {
 
   } catch (error) {
     console.error("Chat route error:", error);
-    
     return res.status(500).json({
-      error: "Something went wrong while processing your message.",
-      reply: "Sorry, I had a technical issue. Could you please try again?",
+      error: "Something went wrong.",
+      reply: "Sorry, I had a technical issue. Please try again.",
     });
   }
 });

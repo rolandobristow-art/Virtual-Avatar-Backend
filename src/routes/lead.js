@@ -9,12 +9,13 @@ router.post("/", async (req, res) => {
     const {
       name,
       email,
+      phone,
       business,
-      note,
       intent,
       problem,
       websiteStatus,
-      finalAction
+      finalAction,
+      note
     } = req.body;
 
     if (!name || !email) {
@@ -26,30 +27,39 @@ router.post("/", async (req, res) => {
     const newLead = saveLead({
       name,
       email,
+      phone,
       business,
-      note,
       intent,
       problem,
       websiteStatus,
-      finalAction
+      finalAction,
+      note
     });
 
+    if (!newLead) {
+      return res.status(500).json({ error: "Failed to save lead" });
+    }
+
+    // Optional: Save to Google Sheets
     try {
       await appendToSheet(newLead);
-      console.log("Lead also saved to Google Sheets.");
+      console.log("✅ Lead also saved to Google Sheets");
     } catch (sheetError) {
-      console.error("Google Sheets save error:", sheetError.message);
+      console.error("Google Sheets error:", sheetError.message);
     }
+
+    console.log(`🎯 New lead captured: ${newLead.name} (${newLead.email})`);
 
     return res.json({
       success: true,
-      message: "Lead captured successfully.",
+      message: "Thank you! Your details have been received.",
       lead: newLead
     });
+
   } catch (error) {
     console.error("Lead route error:", error);
     return res.status(500).json({
-      error: "Could not save lead."
+      error: "Could not save your details. Please try again."
     });
   }
 });
