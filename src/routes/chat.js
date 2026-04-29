@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
     const session = getSession(sessionId);
     const cleanMessage = message.trim();
 
-    // ====================== ACTIVE QUALIFICATION FLOW ======================
+    // ====================== QUALIFICATION IN PROGRESS ======================
     if (isQualificationActive(session)) {
       const result = handleQualificationReply(session, cleanMessage);
 
@@ -35,50 +35,41 @@ router.post("/", async (req, res) => {
         return res.json({ reply: result, mode: "qualification" });
       }
 
-      // Qualification completed → Save the lead
+      // Qualification completed → Save lead
       if (result?.done) {
-        const savedLead = saveLead(result.answers);
+        const savedLead = await saveLead(result.answers);   // ← Important: await
 
         if (savedLead) {
-          console.log(`🎯 LEAD SAVED: ${savedLead.name} (${savedLead.email})`);
-        } else {
-          console.error("❌ Failed to save lead");
+          console.log(`🎯 LEAD SAVED SUCCESSFULLY: ${savedLead.name} (${savedLead.email})`);
         }
 
         return res.json({
-          reply: result.message || "Thank you! I've saved your details and will get back to you shortly.",
+          reply: result.message || "Thank you! Your details have been received. I'll get back to you shortly.",
           mode: "qualification_complete",
           lead: savedLead,
         });
       }
     }
 
-    // ====================== RESPONSE TO QUALIFICATION INVITE ======================
+    // ====================== QUALIFICATION INVITE RESPONSE ======================
     if (isQualificationInvited(session)) {
       if (isYesResponse(cleanMessage)) {
         const firstQuestion = startQualificationFlow(session);
-        return res.json({
-          reply: firstQuestion,
-          mode: "qualification",
-        });
+        return res.json({ reply: firstQuestion, mode: "qualification" });
       }
 
       if (isNoResponse(cleanMessage)) {
         clearQualificationInvite(session);
         return res.json({
-          reply: "No problem at all. I'm happy to answer any questions you have about Virtual Avatar.",
+          reply: "No problem at all. I'm happy to answer any questions you have.",
           mode: "chat",
         });
       }
     }
 
-    // ====================== NORMAL CHAT FLOW ======================
-    const reply = await getChatResponse({ 
-      message: cleanMessage, 
-      history 
-    });
+    // ====================== NORMAL CHAT ======================
+    const reply = await getChatResponse({ message: cleanMessage, history });
 
-    // Offer qualification if user shows interest
     if (shouldOfferQualification(cleanMessage)) {
       markQualificationInvited(session);
 
@@ -86,16 +77,10 @@ router.post("/", async (req, res) => {
         ? reply 
         : `${reply}\n\nI can show you exactly how this would work for your business — it’ll just take a few quick questions.`;
 
-      return res.json({
-        reply: finalReply,
-        mode: "invite_qualification",
-      });
+      return res.json({ reply: finalReply, mode: "invite_qualification" });
     }
 
-    return res.json({
-      reply,
-      mode: "chat",
-    });
+    return res.json({ reply, mode: "chat" });
 
   } catch (error) {
     console.error("Chat route error:", error);
