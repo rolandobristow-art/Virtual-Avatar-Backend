@@ -6,11 +6,11 @@ import nodemailer from "nodemailer";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Use your actual filename
+// ✅ Correct path for your lead.json file
 const leadsDir = path.join(__dirname, "../data");
-const leadsFile = path.join(leadsDir, "lead.json");   // ← Changed to lead.json
+const leadsFile = path.join(leadsDir, "lead.json");
 
-// ====================== EMAIL SETUP ======================
+// Email setup
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -53,9 +53,10 @@ export async function saveLead(answers = {}) {
     leads.push(newLead);
     fs.writeFileSync(leadsFile, JSON.stringify(leads, null, 2), "utf-8");
 
+    // Send email notification
     await sendLeadEmail(newLead);
 
-    console.log(`✅ Lead saved: ${newLead.name || newLead.email}`);
+    console.log(`✅ Lead saved successfully: ${newLead.name || newLead.email}`);
     return newLead;
 
   } catch (err) {
@@ -81,7 +82,7 @@ async function sendLeadEmail(lead) {
     });
     console.log("📧 Lead email sent");
   } catch (e) {
-    console.error("Email failed:", e.message);
+    console.error("❌ Email sending failed:", e.message);
   }
 }
 
@@ -90,7 +91,7 @@ export function getLeads() {
   try {
     const raw = fs.readFileSync(leadsFile, "utf-8");
     return JSON.parse(raw);
-  } catch (err) {
+  } catch {
     return [];
   }
 }
