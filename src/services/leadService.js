@@ -6,11 +6,11 @@ import nodemailer from "nodemailer";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ Correct path for your lead.json file
+// Use leads.json (plural) - more standard
 const leadsDir = path.join(__dirname, "../data");
-const leadsFile = path.join(leadsDir, "lead.json");
+const leadsFile = path.join(leadsDir, "leads.json");
 
-// Email setup
+// ====================== EMAIL SETUP ======================
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -25,7 +25,7 @@ function ensureLeadsFile() {
   }
   if (!fs.existsSync(leadsFile)) {
     fs.writeFileSync(leadsFile, "[]", "utf-8");
-    console.log("✅ lead.json file created");
+    console.log("✅ leads.json created");
   }
 }
 
@@ -41,7 +41,6 @@ export async function saveLead(answers = {}) {
       timestamp: new Date().toISOString(),
       name: String(answers.name || "").trim(),
       email: String(answers.email || "").trim(),
-      phone: String(answers.phone || "").trim(),
       business: String(answers.business || "").trim(),
       intent: String(answers.intent || "").trim(),
       problem: String(answers.problem || "").trim(),
@@ -53,10 +52,10 @@ export async function saveLead(answers = {}) {
     leads.push(newLead);
     fs.writeFileSync(leadsFile, JSON.stringify(leads, null, 2), "utf-8");
 
-    // Send email notification
+    // Send email
     await sendLeadEmail(newLead);
 
-    console.log(`✅ Lead saved successfully: ${newLead.name || newLead.email}`);
+    console.log(`✅ Lead saved: ${newLead.name} (${newLead.email})`);
     return newLead;
 
   } catch (err) {
@@ -68,7 +67,7 @@ export async function saveLead(answers = {}) {
 async function sendLeadEmail(lead) {
   try {
     await transporter.sendMail({
-      from: `"Virtual Avatar" <${process.env.EMAIL_USER}>`,
+      from: `"Virtual Avatar Leads" <${process.env.EMAIL_USER}>`,
       to: process.env.EMAIL_USER,
       subject: `New Lead: ${lead.name || "Anonymous"}`,
       html: `
@@ -80,9 +79,9 @@ async function sendLeadEmail(lead) {
         <p><strong>Time:</strong> ${lead.timestamp}</p>
       `
     });
-    console.log("📧 Lead email sent");
+    console.log("📧 Lead email sent successfully");
   } catch (e) {
-    console.error("❌ Email sending failed:", e.message);
+    console.error("❌ Email failed:", e.message);
   }
 }
 
@@ -91,7 +90,8 @@ export function getLeads() {
   try {
     const raw = fs.readFileSync(leadsFile, "utf-8");
     return JSON.parse(raw);
-  } catch {
+  } catch (err) {
+    console.error("❌ Failed to read leads:", err.message);
     return [];
   }
 }
