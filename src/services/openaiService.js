@@ -21,11 +21,10 @@ if (!process.env.OPENAI_API_KEY) {
 let knowledgeBase = "";
 
 function loadKnowledgeBase() {
-  // Multiple possible paths to handle different structures
   const possiblePaths = [
-    path.join(__dirname, "../data/knowledge.json"),     // From src/
-    path.join(__dirname, "../../data/knowledge.json"),  // From dist/ or deeper
-    path.join(process.cwd(), "data/knowledge.json"),    // From project root
+    path.join(__dirname, "../data/knowledge.json"),
+    path.join(__dirname, "../../data/knowledge.json"),
+    path.join(process.cwd(), "data/knowledge.json"),
   ];
 
   for (const knowledgePath of possiblePaths) {
@@ -33,12 +32,36 @@ function loadKnowledgeBase() {
       if (fs.existsSync(knowledgePath)) {
         const raw = fs.readFileSync(knowledgePath, "utf-8");
         const parsed = JSON.parse(raw);
-        knowledgeBase = parsed.content || parsed.knowledge || parsed || "";
-        console.log(`✅ Knowledge base loaded from: ${knowledgePath}`);
+
+        // Convert your structured knowledge.json into a clean string for the prompt
+        knowledgeBase = `
+Brand: ${parsed.brand?.name || "Virtual Avatar"}
+Positioning: ${parsed.brand?.positioning || ""}
+
+What it is:
+${parsed.what_it_is?.join("\n") || ""}
+
+What it is not:
+${parsed.what_it_is_not?.join("\n") || ""}
+
+Core Benefits:
+${parsed.core_benefits?.join("\n") || ""}
+
+Ideal Use Cases:
+${parsed.ideal_use_cases?.join("\n") || ""}
+
+Common Questions & Answers:
+${Object.entries(parsed.common_questions || {}).map(([q, a]) => `- ${q}: ${a}`).join("\n")}
+
+Style Rules:
+${parsed.style_rules?.join("\n") || ""}
+`.trim();
+
+        console.log(`✅ Knowledge base loaded successfully from: ${knowledgePath}`);
         return;
       }
     } catch (err) {
-      // Silent fail for this path
+      // Try next path
     }
   }
 
@@ -50,7 +73,7 @@ loadKnowledgeBase();
 // ====================== SYSTEM PROMPT ======================
 function buildSystemPrompt() {
   return `
-You are June, a confident, friendly, and slightly sassy human assistant for Virtual Avatar.
+You are Karen, a confident, friendly, and slightly sassy human assistant for Virtual Avatar.
 
 Your main goal is to help the visitor and gently guide them toward sharing their contact details so we can help them properly.
 
@@ -86,8 +109,9 @@ When the user shows interest:
 - Do not be pushy, but be direct.
 
 Knowledge Base:
-${knowledgeBase || "No additional knowledge loaded."}
+${knowledgeBase} loaded."}
 `.trim();
+
 }
 
 // ====================== CHAT FUNCTION ======================
