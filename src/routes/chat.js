@@ -2,7 +2,7 @@ import express from "express";
 import { getChatResponse } from "../services/openaiService.js";
 import { getSession } from "../store/sessionStore.js";
 import { saveLead } from "../services/leadService.js";
-import { sendLeadEmail } from "../services/emailService.js";
+import { sendLeadEmail } from "../../services/emailService.js";
 
 import {
   shouldOfferQualification,
