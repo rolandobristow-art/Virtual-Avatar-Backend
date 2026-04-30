@@ -29,6 +29,18 @@ router.post("/", async (req, res) => {
     const session = getSession(sessionId);
     const cleanMessage = message.trim();
 
+    // Temporary test route - add at the bottom before "export default router;"
+router.post("/test-lead", async (req, res) => {
+  const testLead = await saveLead({
+    name: "Test User",
+    email: "test@example.com",
+    business: "Test Business",
+    intent: "Testing",
+  });
+  
+  res.json({ success: !!testLead, lead: testLead });
+});
+
     // ====================== QUALIFICATION FLOW ======================
     if (isQualificationActive(session)) {
       const result = handleQualificationReply(session, cleanMessage);
