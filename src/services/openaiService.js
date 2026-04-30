@@ -22,9 +22,10 @@ let knowledgeBase = "";
 
 function loadKnowledgeBase() {
   const possiblePaths = [
-    path.join(__dirname, "../data/knowledge.json"),
-    path.join(__dirname, "../../data/knowledge.json"),
-    path.join(process.cwd(), "data/knowledge.json"),
+    path.join(__dirname, "../data/knowledge.json"),        // Standard
+    path.join(__dirname, "../../data/knowledge.json"),     // If inside src/
+    path.join(process.cwd(), "data/knowledge.json"),       // Project root
+    path.join(process.cwd(), "src/data/knowledge.json")    // Render common path
   ];
 
   for (const knowledgePath of possiblePaths) {
@@ -33,39 +34,41 @@ function loadKnowledgeBase() {
         const raw = fs.readFileSync(knowledgePath, "utf-8");
         const parsed = JSON.parse(raw);
 
-        // Convert your structured knowledge.json into a clean string for the prompt
+        // Convert structured JSON into clean text for the AI
         knowledgeBase = `
-Brand: ${parsed.brand?.name || "Virtual Avatar"}
+Brand Name: ${parsed.brand?.name || "Virtual Avatar"}
 Positioning: ${parsed.brand?.positioning || ""}
 
-What it is:
-${parsed.what_it_is?.join("\n") || ""}
+What It Is:
+${(parsed.what_it_is || []).join("\n")}
 
-What it is not:
-${parsed.what_it_is_not?.join("\n") || ""}
+What It Is Not:
+${(parsed.what_it_is_not || []).join("\n")}
 
 Core Benefits:
-${parsed.core_benefits?.join("\n") || ""}
+${(parsed.core_benefits || []).join("\n")}
 
 Ideal Use Cases:
-${parsed.ideal_use_cases?.join("\n") || ""}
+${(parsed.ideal_use_cases || []).join("\n")}
 
-Common Questions & Answers:
-${Object.entries(parsed.common_questions || {}).map(([q, a]) => `- ${q}: ${a}`).join("\n")}
+Common Questions:
+${Object.entries(parsed.common_questions || {})
+  .map(([key, value]) => `- ${key.replace(/_/g, " ")}: ${value}`)
+  .join("\n")}
 
 Style Rules:
-${parsed.style_rules?.join("\n") || ""}
+${(parsed.style_rules || []).join("\n")}
 `.trim();
 
         console.log(`✅ Knowledge base loaded successfully from: ${knowledgePath}`);
         return;
       }
     } catch (err) {
-      // Try next path
+      console.warn(`Failed to load from ${knowledgePath}: ${err.message}`);
     }
   }
 
-  console.warn("⚠️ Could not load knowledge.json from any expected path");
+  console.warn("⚠️ Could not load knowledge.json from any path. Using empty knowledge base.");
 }
 
 loadKnowledgeBase();
