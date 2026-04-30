@@ -9,13 +9,8 @@ const leadsDir = path.join(__dirname, "../data");
 const leadsFile = path.join(leadsDir, "leads.json");
 
 function ensureLeadsFile() {
-  if (!fs.existsSync(leadsDir)) {
-    fs.mkdirSync(leadsDir, { recursive: true });
-  }
-  if (!fs.existsSync(leadsFile)) {
-    fs.writeFileSync(leadsFile, "[]", "utf-8");
-    console.log("✅ leads.json created");
-  }
+  if (!fs.existsSync(leadsDir)) fs.mkdirSync(leadsDir, { recursive: true });
+  if (!fs.existsSync(leadsFile)) fs.writeFileSync(leadsFile, "[]", "utf-8");
 }
 
 export async function saveLead(answers = {}) {
@@ -30,34 +25,19 @@ export async function saveLead(answers = {}) {
       timestamp: new Date().toISOString(),
       name: String(answers.name || "").trim(),
       email: String(answers.email || "").trim(),
-      phone: String(answers.phone || "").trim(),
       business: String(answers.business || "").trim(),
       intent: String(answers.intent || "").trim(),
       problem: String(answers.problem || "").trim(),
-      websiteStatus: String(answers.websiteStatus || "").trim(),
-      finalAction: String(answers.finalAction || "").trim(),
       note: String(answers.note || "").trim(),
     };
 
     leads.push(newLead);
     fs.writeFileSync(leadsFile, JSON.stringify(leads, null, 2), "utf-8");
 
-    console.log(`✅ Lead saved to JSON: ${newLead.name} (${newLead.email})`);
+    console.log(`✅ Lead saved: ${newLead.name} (${newLead.email})`);
     return newLead;
-
   } catch (err) {
-    console.error("❌ Failed to save lead:", err.message);
+    console.error("❌ Save lead failed:", err.message);
     return null;
-  }
-}
-
-export function getLeads() {
-  ensureLeadsFile();
-  try {
-    const raw = fs.readFileSync(leadsFile, "utf-8");
-    return JSON.parse(raw);
-  } catch (err) {
-    console.error("❌ Failed to read leads:", err.message);
-    return [];
   }
 }

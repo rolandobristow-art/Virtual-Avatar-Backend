@@ -20,11 +20,15 @@ export async function sendLeadEmail(lead) {
         <p><strong>Name:</strong> ${lead.name || "N/A"}</p>
         <p><strong>Email:</strong> ${lead.email || "N/A"}</p>
         <p><strong>Phone:</strong> ${lead.phone || "N/A"}</p>
-        <p><strong>Business:</strong> ${lead.business || "N/A"}</p>
+        <p><strong>Business:</strong> ${lead.business || lead.company || "N/A"
+        }/p>
+        <p><strong>Website:</strong> ${lead.website || "N/A"}</p>
 
         <hr/>
 
-        <p><strong>Intent:</strong> ${lead.intent || "N/A"}</p>
+        <p><strong>Goal / Intent:</strong> ${lead.goal || lead.intent || "N/A"}</p>
+        <p><strong>Placement:</strong> ${lead.placement || "N/A"}</p>
+        <p><strong>Timeline:</strong> ${lead.timeline || "N/A"}</p>
         <p><strong>Problem:</strong> ${lead.problem || "N/A"}</p>
         <p><strong>Website Status:</strong> ${lead.websiteStatus || "N/A"}</p>
         <p><strong>Final Action:</strong> ${lead.finalAction || "N/A"}</p>

@@ -96,39 +96,5 @@ router.post("/", async (req, res) => {
     });
   }
 });
-// ====================== TEST LEAD ROUTE (Easy Testing) ======================
-router.post("/test-lead", async (req, res) => {
-  try {
-    const testData = {
-      name: "Test User",
-      email: "test@example.com",
-      business: "Test Business",
-      intent: "Testing lead capture",
-      problem: "Want to see if saving works",
-      finalAction: "Test",
-      note: "This is a manual test from /test-lead"
-    };
 
-    const savedLead = await saveLead(testData);
-
-    if (savedLead) {
-      return res.json({
-        success: true,
-        message: "Test lead saved successfully!",
-        lead: savedLead
-      });
-    } else {
-      return res.status(500).json({
-        success: false,
-        message: "saveLead() returned null"
-      });
-    }
-  } catch (error) {
-    console.error("Test lead error:", error);
-    return res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
-});
 export default router;
