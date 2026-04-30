@@ -44,17 +44,16 @@ router.post("/", async (req, res) => {
 
         if (savedLead) {
           console.log(`🎯 LEAD SAVED: ${savedLead.name} (${savedLead.email})`);
-
-          // Send email notification
-          await sendLeadEmail(savedLead);
+        } else {
+          console.error("❌ saveLead() returned null - check leadService.js");
         }
 
         return res.json({
-          reply: result.message || "Thank you! Your details have been received. I'll get back to you shortly.",
+          reply: "Thank you! Your details have been received.",
           mode: "qualification_complete",
           lead: savedLead,
         });
-      }
+            }
     }
 
     // ====================== QUALIFICATION INVITE RESPONSE ======================
