@@ -52,7 +52,7 @@ router.post("/", async (req, res) => {
         });
       }
     }
-    
+
     // ====================== QUALIFICATION INVITE RESPONSE ======================
     if (isQualificationInvited(session)) {
       if (isYesResponse(cleanMessage)) {
@@ -91,6 +91,11 @@ router.post("/", async (req, res) => {
       reply: "Sorry, I had a technical issue. Please try again.",
     });
   }
+});
+
+router.get("/leads", (req, res) => {
+  const leads = getLeads();   // from leadService
+  res.json(leads);
 });
 
 export default router;
