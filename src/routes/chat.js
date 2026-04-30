@@ -37,15 +37,18 @@ router.post("/", async (req, res) => {
       if (typeof result === "string") {
         return res.json({ reply: result, mode: "qualification" });
       }
-
-      // Qualification completed → Save lead + Send email
+// Qualification completed → Save lead + Send email
       if (result?.done) {
+        console.log("✅ Qualification completed. Data received:", result.answers);
+
         const savedLead = await saveLead(result.answers);
 
+        console.log("saveLead() returned:", savedLead);   // ← This is the key line
+
         if (savedLead) {
-          console.log(`🎯 LEAD SAVED: ${savedLead.name} (${savedLead.email})`);
+          console.log(`🎯 LEAD SAVED SUCCESSFULLY: ${savedLead.name} (${savedLead.email})`);
         } else {
-          console.error("❌ saveLead() returned null - check leadService.js");
+          console.error("❌ saveLead() returned null or failed");
         }
 
         return res.json({
@@ -53,7 +56,7 @@ router.post("/", async (req, res) => {
           mode: "qualification_complete",
           lead: savedLead,
         });
-            }
+      }
     }
 
     // ====================== QUALIFICATION INVITE RESPONSE ======================
