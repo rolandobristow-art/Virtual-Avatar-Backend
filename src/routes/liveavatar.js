@@ -7,7 +7,7 @@ const LIVEAVATAR_CONFIG = {
   avatar_id: "073b60a9-89a8-45aa-8902-c358f64d2852",
   avatar_persona: {
     voice_id: "254ffe1e-c89f-430f-8c36-9e7611d310c0",
-    context_id: "47ed694b-95b3-401f-818e-493558588eae",   // ← Your chosen persona
+    context_id: "47ed694b-95b3-401f-818e-493558588eae",
     language: "en"
   }
 };
