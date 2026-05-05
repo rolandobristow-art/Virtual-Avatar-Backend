@@ -29,37 +29,36 @@ router.post("/", async (req, res) => {
     const session = getSession(sessionId);
     const cleanMessage = message.trim();
 
-   
-    // ====================== QUALIFICATION FLOW ======================
+    // Qualification Flow
     if (isQualificationActive(session)) {
       const result = handleQualificationReply(session, cleanMessage);
 
       if (typeof result === "string") {
         return res.json({ reply: result, mode: "qualification" });
       }
-// Qualification completed → Save lead + Send email
-      if (result?.done) {
-        console.log("🔥 Qualification DONE - attempting to save lead");
 
+      if (result?.done) {
         const savedLead = await saveLead(result.answers);
 
-        console.log("🔥 saveLead returned:", savedLead);
+        if (savedLead) {
+          await sendLeadEmail(savedLead);   // Send email
+          console.log(`🎯 LEAD SAVED: ${savedLead.name} (${savedLead.email})`);
+        }
 
         return res.json({
           reply: "Thank you! Your details have been received.",
           mode: "qualification_complete",
-          lead: savedLead
+          lead: savedLead,
         });
       }
     }
 
-    // ====================== QUALIFICATION INVITE RESPONSE ======================
+    // Qualification Invite Response
     if (isQualificationInvited(session)) {
       if (isYesResponse(cleanMessage)) {
         const firstQuestion = startQualificationFlow(session);
         return res.json({ reply: firstQuestion, mode: "qualification" });
       }
-
       if (isNoResponse(cleanMessage)) {
         clearQualificationInvite(session);
         return res.json({
@@ -69,14 +68,13 @@ router.post("/", async (req, res) => {
       }
     }
 
-    // ====================== NORMAL CHAT ======================
+    // Normal Chat
     const reply = await getChatResponse({ message: cleanMessage, history });
 
     if (shouldOfferQualification(cleanMessage)) {
       markQualificationInvited(session);
-
-      const finalReply = reply.includes("few quick questions")
-        ? reply
+      const finalReply = reply.includes("few quick questions") 
+        ? reply 
         : `${reply}\n\nI can show you exactly how this would work for your business — it’ll just take a few quick questions.`;
 
       return res.json({ reply: finalReply, mode: "invite_qualification" });
@@ -91,11 +89,6 @@ router.post("/", async (req, res) => {
       reply: "Sorry, I had a technical issue. Please try again.",
     });
   }
-});
-
-router.get("/leads", (req, res) => {
-  const leads = getLeads();   // from leadService
-  res.json(leads);
 });
 
 export default router;
