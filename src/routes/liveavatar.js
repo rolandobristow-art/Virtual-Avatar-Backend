@@ -3,11 +3,11 @@ import express from "express";
 const router = express.Router();
 
 const LIVEAVATAR_CONFIG = {
-  mode: "LITE",
+  mode: "FULL",                                        // ← Changed to FULL
   avatar_id: "073b60a9-89a8-45aa-8902-c358f64d2852",
   avatar_persona: {
     voice_id: "254ffe1e-c89f-430f-8c36-9e7611d310c0",
-    context_id: "47ed694b-95b3-401f-818e-493558588eae", 
+    context_id: "47ed694b-95b3-401f-818e-493558588eae",   // Your chosen context
     language: "en"
   }
 };
@@ -26,11 +26,10 @@ router.get("/token", async (req, res) => {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("LiveAvatar token error:", data);
       return res.status(response.status).json({ error: "Failed to create token", details: data });
     }
 
-    console.log("✅ LiveAvatar session token created with context:", LIVEAVATAR_CONFIG.avatar_persona.context_id);
+    console.log("✅ Full Mode session created with context:", LIVEAVATAR_CONFIG.avatar_persona.context_id);
 
     return res.json({
       code: 1000,
