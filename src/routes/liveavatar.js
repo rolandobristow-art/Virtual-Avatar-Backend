@@ -14,13 +14,17 @@ const LIVEAVATAR_CONFIG = {
 
 router.get("/token", async (req, res) => {
   try {
-    console.log("KEY:", process.env.LIVEAVATAR_API_KEY);
-    console.log("CONFIG:", LIVEAVATAR_CONFIG);
+    console.log("LIVEAVATAR_API_KEY length:", process.env.LIVEAVATAR_API_KEY ? process.env.LIVEAVATAR_API_KEY.length : "MISSING");
+    console.log("LIVEAVATAR_API_KEY starts with:", process.env.LIVEAVATAR_API_KEY ? process.env.LIVEAVATAR_API_KEY.substring(0, 20) : "MISSING");
+
+    if (!process.env.LIVEAVATAR_API_KEY) {
+      return res.status(500).json({ error: "LIVEAVATAR_API_KEY is missing in environment" });
+    }
 
     const response = await fetch("https://api.liveavatar.com/v1/sessions/token", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.LIVEAVATAR_API_KEY}`,
+        "X-API-KEY": process.env.LIVEAVATAR_API_KEY,
         "Content-Type": "application/json"
       },
       body: JSON.stringify(LIVEAVATAR_CONFIG)
@@ -29,24 +33,24 @@ router.get("/token", async (req, res) => {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("LiveAvatar Error:", data);
       return res.status(response.status).json({
         error: "LiveAvatar token failed",
         details: data
       });
     }
 
-    console.log("✅ Session created:", data);
-
     return res.json({
       code: 1000,
-      data,
+      data: data,
       message: "Session token created successfully"
     });
 
-  } catch (error) {
+ } catch (error) {
     console.error("LiveAvatar error:", error);
-    return res.status(500).json({ error: "Could not connect to LiveAvatar" });
+    return res.status(500).json({ 
+      error: "Could not connect to LiveAvatar",
+      details: error.message 
+    });
   }
 });
 
