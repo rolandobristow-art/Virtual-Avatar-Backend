@@ -6,7 +6,7 @@ const LIVEAVATAR_CONFIG = {
   mode: "FULL",
   avatar_id: "073b60a9-89a8-45aa-8902-c358f64d2852",
   avatar_persona: {
-    voice_id: "254ffe1e-c89f-430f-8c36-9e7611d310c0",
+    voice_id: "864a26b8-bfba-4435-9cc5-1dd593de5ca7",
     context_id: "47ed694b-95b3-401f-818e-493558588eae",
     language: "en"
   }
