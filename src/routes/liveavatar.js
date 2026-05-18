@@ -13,7 +13,7 @@ const LIVEAVATAR_CONFIG = {
     language: "en"
   },
 
-  is_sandbox: true
+  is_sandbox: false
 };
 
 router.get("/token", async (req, res) => {
