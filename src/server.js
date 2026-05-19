@@ -27,6 +27,26 @@ app.use("/api/chat", chatRouter);
 app.use("/api/lead", leadRouter);
 app.use("/api/liveavatar", liveAvatarRouter);
 
+// ====================== CHAT ROUTE (Add this) ======================
+app.post("/api/chat", async (req, res) => {
+  try {
+    const { message, history = [] } = req.body;
+
+    if (!message) {
+      return res.status(400).json({ error: "Message is required" });
+    }
+
+    // Call your OpenAI service
+    const reply = await getChatResponse({ message, history });
+
+    res.json({ reply });
+
+  } catch (error) {
+    console.error("Chat route error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // Health check (important for Render)
 app.get("/", (req, res) => {
   res.send("Virtual Avatar Backend is running");
