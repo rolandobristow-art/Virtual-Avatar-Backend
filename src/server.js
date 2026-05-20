@@ -21,43 +21,39 @@ const app = express();
 
 // ====================== MIDDLEWARE ======================
 app.use(cors());
-app.use(express.json({ limit: "10mb" }));        // Increased limit for safety
+app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 // ====================== STATIC FILES (FRONTEND) ======================
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Serve the separate frontend folder
+// Serve your separate frontend folder
 app.use(express.static(path.join(__dirname, '../../frontend')));
 
-// IMPORTANT: Fallback route - serve index.html for all pages
+// IMPORTANT: Fallback - serve index.html for all routes (SPA style)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../../frontend/index.html'));
 });
+
 // ====================== ROUTES ======================
-// API Routes (using routers)
+// API Routes
 app.use("/api/chat", chatRouter);
-app.use("/api/lead", leadRouter);          // ← Already correct (singular)
+app.use("/api/lead", leadRouter);
 app.use("/api/liveavatar", liveAvatarRouter);
 
-// Health check route
+// Health check
 app.get("/", (req, res) => {
   res.send("✅ Virtual Avatar Backend is running smoothly");
 });
 
-// Optional: Catch-all for undefined routes
+// Catch-all 404
 app.use("*", (req, res) => {
   res.status(404).json({ error: "Route not found" });
 });
 
-// ====================== SERVER START ======================
+// ====================== START SERVER ======================
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
-  console.log(`📍 Lead endpoint ready at: http://localhost:${PORT}/api/lead`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🌐 Frontend served from: ../../frontend`);
+  console.log(`📍 Lead endpoint: http://localhost:${PORT}/api/lead`);
 });
