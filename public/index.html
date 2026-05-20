@@ -3,85 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Avatar - AI Humans for Business</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <title>Virtual Avatar</title>
     <style>
-        * { box-sizing: border-box; }
         body {
             margin: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: Arial, sans-serif;
             background: #0b0f19;
-            color: #ffffff;
+            color: white;
             text-align: center;
-            padding: 60px 20px;
+            padding: 100px 20px;
         }
-        h1 { font-size: 52px; margin: 20px 0; }
-        .subtitle { font-size: 19px; color: #a9b3c7; max-width: 720px; margin: 0 auto 50px; }
-        #avatarContainer {
-            width: 100%; max-width: 860px; height: 640px; background: #000;
-            margin: 40px auto; border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-        }
-        .lead-section {
-            max-width: 800px; margin: 80px auto; background: rgba(18,24,38,0.95);
-            padding: 50px; border-radius: 24px;
-        }
+        h1 { font-size: 60px; color: #00ff9d; }
+        p { font-size: 22px; max-width: 700px; margin: 0 auto; }
     </style>
 </head>
 <body>
-
     <h1>Virtual Avatar</h1>
-    <p class="subtitle">Real-time AI Humans that speak, engage, and convert for your business.</p>
-
-    <div id="avatarContainer">HeyGen Live Avatar will load here</div>
-
-    <div class="lead-section">
-        <h2>Ready to get your own AI Avatar?</h2>
-        <p style="color:#a9b3c7;">Tell us about your business and we'll create a custom demo for you.</p>
-        
-        <form id="leadForm">
-            <input id="leadName" type="text" placeholder="Your Name" required style="width:100%; padding:14px; margin:10px 0; border-radius:8px;">
-            <input id="leadEmail" type="email" placeholder="Email Address" required style="width:100%; padding:14px; margin:10px 0; border-radius:8px;">
-            <input id="leadBusiness" type="text" placeholder="Business Name" style="width:100%; padding:14px; margin:10px 0; border-radius:8px;">
-            <textarea id="leadNote" placeholder="Tell us about your project" style="width:100%; padding:14px; margin:10px 0; border-radius:8px; height:120px;"></textarea>
-            <button type="submit" style="padding:16px 40px; background:#00ff9d; color:black; border:none; border-radius:12px; margin-top:15px;">Request Demo</button>
-        </form>
-        <p id="leadStatus"></p>
+    <p>Real-time AI Humans that speak, engage, and convert for your business.</p>
+    
+    <div style="margin: 60px auto; padding: 40px; background: #1e2937; border-radius: 20px; max-width: 600px;">
+        <h2 style="color:#00ff9d;">TEST PAGE</h2>
+        <p>If you can see this dark background with green text, the site is now working.</p>
+        <p>We'll add the avatar and form back once this shows.</p>
     </div>
-
-    <script>
-        // Simple Lead Form
-        document.getElementById('leadForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const status = document.getElementById('leadStatus');
-            status.textContent = "Submitting...";
-            status.style.color = "#666";
-
-            const data = {
-                name: document.getElementById('leadName').value.trim(),
-                email: document.getElementById('leadEmail').value.trim(),
-                business: document.getElementById('leadBusiness').value.trim(),
-                note: document.getElementById('leadNote').value.trim()
-            };
-
-            try {
-                const res = await fetch('/api/lead', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-
-                if (res.ok) {
-                    status.textContent = "✅ Thank you! We'll contact you soon.";
-                    status.style.color = "#00ff9d";
-                    this.reset();
-                }
-            } catch (err) {
-                status.textContent = "❌ Error. Please try again.";
-                status.style.color = "#ff6b6b";
-            }
-        });
-    </script>
 </body>
 </html>
