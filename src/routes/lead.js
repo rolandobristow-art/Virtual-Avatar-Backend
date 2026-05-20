@@ -1,6 +1,6 @@
 import express from 'express';
-import { saveLead } from '../../service/leadService.js';
-import { sendLeadEmail } from '../../services/emailService.js';   // ← Import your email service
+import { saveLead } from '../services/leadService.js';        // ← Correct (plural + one level up)
+import { sendLeadEmail } from '../services/emailService.js';  // ← Correct
 
 const router = express.Router();
 
@@ -15,19 +15,17 @@ router.post('/api/lead', async (req, res) => {
       });
     }
 
-    // === Send Email Notification ===
+    // Send email notification
     try {
-      await sendLeadNotification(lead);
-      console.log(`📧 Email notification sent for lead: ${lead.name}`);
+      await sendLeadEmail(lead);
+      console.log(`📧 Email notification sent for: ${lead.name}`);
     } catch (emailError) {
-      console.warn("⚠️ Lead saved, but email notification failed:", emailError.message);
-      // We still return success because the lead was saved
+      console.warn("⚠️ Email failed but lead was saved:", emailError.message);
     }
 
     res.status(200).json({ 
       success: true, 
-      message: "Lead received successfully",
-      lead 
+      message: "Thank you! We'll contact you soon." 
     });
 
   } catch (error) {
