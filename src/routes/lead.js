@@ -1,6 +1,6 @@
 import express from 'express';
-import { saveLead } from './../../service/leadService.js';
-import { sendLeadNotification } from '../services/emailService.js';   // ← Import your email service
+import { saveLead } from '../../service/leadService.js';
+import { sendLeadEmail } from '../../services/emailService.js';   // ← Import your email service
 
 const router = express.Router();
 
