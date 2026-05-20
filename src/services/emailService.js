@@ -13,34 +13,24 @@ export async function sendLeadEmail(lead) {
     await transporter.sendMail({
       from: `"Virtual Avatar Leads" <${process.env.EMAIL_USER}>`,
       to: process.env.LEAD_NOTIFY_EMAIL || process.env.EMAIL_USER,
-      subject: `🔥 New Lead: ${lead.name || "Website visitor"}`,
+      subject: `🔥 New Lead: ${lead.name || "Website Visitor"}`,
       html: `
-        <h2>New Lead Captured</h2>
-
-        <p><strong>Name:</strong> ${lead.name || "N/A"}</p>
-        <p><strong>Email:</strong> ${lead.email || "N/A"}</p>
-        <p><strong>Phone:</strong> ${lead.phone || "N/A"}</p>
-        <p><strong>Business:</strong> ${lead.business || lead.company || "N/A"
-        }/p>
-        <p><strong>Website:</strong> ${lead.website || "N/A"}</p>
-
-        <hr/>
-
-        <p><strong>Goal / Intent:</strong> ${lead.goal || lead.intent || "N/A"}</p>
-        <p><strong>Placement:</strong> ${lead.placement || "N/A"}</p>
-        <p><strong>Timeline:</strong> ${lead.timeline || "N/A"}</p>
-        <p><strong>Problem:</strong> ${lead.problem || "N/A"}</p>
-        <p><strong>Website Status:</strong> ${lead.websiteStatus || "N/A"}</p>
-        <p><strong>Final Action:</strong> ${lead.finalAction || "N/A"}</p>
-
-        <hr/>
-
-        <p><strong>Notes:</strong> ${lead.note || "N/A"}</p>
-        <p><strong>Captured at:</strong> ${lead.createdAt || lead.timestamp || new Date().toISOString()}</p>
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h2>🆕 New Lead from VirtualAvatare.co.za</h2>
+          
+          <p><strong>Name:</strong> ${lead.name || "N/A"}</p>
+          <p><strong>Email:</strong> ${lead.email || "N/A"}</p>
+          <p><strong>Business:</strong> ${lead.business || "N/A"}</p>
+          <p><strong>Notes:</strong> ${lead.note || "N/A"}</p>
+          
+          <hr>
+          <p><strong>Lead ID:</strong> ${lead.id}</p>
+          <p><strong>Time:</strong> ${lead.timestamp}</p>
+        </div>
       `,
     });
 
-    console.log("📧 Lead email sent successfully");
+    console.log("📧 Lead email sent successfully to", process.env.LEAD_NOTIFY_EMAIL || process.env.EMAIL_USER);
     return true;
 
   } catch (e) {

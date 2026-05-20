@@ -1,65 +1,40 @@
-import express from "express";
-import { saveLead } from "../services/leadService.js";
-import { appendToSheet } from "../services/googleSheets.js";
+import express from 'express';
+import { saveLead } from '../service/leadService.js';
+import { sendLeadNotification } from '../services/emailService.js';   // ← Import your email service
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post('/api/lead', async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      phone,
-      business,
-      intent,
-      problem,
-      websiteStatus,
-      finalAction,
-      note
-    } = req.body;
+    const lead = await saveLead(req.body);
 
-    if (!name || !email) {
-      return res.status(400).json({
-        error: "Name and email are required."
+    if (!lead) {
+      return res.status(500).json({ 
+        success: false, 
+        message: "Failed to save lead" 
       });
     }
 
-    const newLead = saveLead({
-      name,
-      email,
-      phone,
-      business,
-      intent,
-      problem,
-      websiteStatus,
-      finalAction,
-      note
-    });
-
-    if (!newLead) {
-      return res.status(500).json({ error: "Failed to save lead" });
-    }
-
-    // Optional: Save to Google Sheets
+    // === Send Email Notification ===
     try {
-      await appendToSheet(newLead);
-      console.log("✅ Lead also saved to Google Sheets");
-    } catch (sheetError) {
-      console.error("Google Sheets error:", sheetError.message);
+      await sendLeadNotification(lead);
+      console.log(`📧 Email notification sent for lead: ${lead.name}`);
+    } catch (emailError) {
+      console.warn("⚠️ Lead saved, but email notification failed:", emailError.message);
+      // We still return success because the lead was saved
     }
 
-    console.log(`🎯 New lead captured: ${newLead.name} (${newLead.email})`);
-
-    return res.json({
-      success: true,
-      message: "Thank you! Your details have been received.",
-      lead: newLead
+    res.status(200).json({ 
+      success: true, 
+      message: "Lead received successfully",
+      lead 
     });
 
   } catch (error) {
-    console.error("Lead route error:", error);
-    return res.status(500).json({
-      error: "Could not save your details. Please try again."
+    console.error("❌ Lead route error:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Server error" 
     });
   }
 });
