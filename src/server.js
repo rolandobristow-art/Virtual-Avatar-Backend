@@ -9,51 +9,39 @@ import chatRouter from "./routes/chat.js";
 import leadRouter from "./routes/lead.js";
 import liveAvatarRouter from "./routes/liveavatar.js";
 
-// Load environment variables
 dotenv.config();
 
-// Fix __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Initialize Express
 const app = express();
 
-// ====================== MIDDLEWARE ======================
+// Middleware
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// ====================== STATIC FILES (FRONTEND) ======================
-// Serve your separate frontend folder
-app.use(express.static(path.join(__dirname, '../../frontend')));
+// ====================== STATIC FILES (PUBLIC FOLDER) ======================
+app.use(express.static(path.join(__dirname, '../public')));
 
-// IMPORTANT: Fallback - serve index.html for all routes (SPA style)
+// Serve index.html for all routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend/index.html'));
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-// ====================== ROUTES ======================
-// API Routes
+// ====================== API ROUTES ======================
 app.use("/api/chat", chatRouter);
 app.use("/api/lead", leadRouter);
 app.use("/api/liveavatar", liveAvatarRouter);
 
 // Health check
 app.get("/", (req, res) => {
-  res.send("✅ Virtual Avatar Backend is running smoothly");
+  res.send("✅ Backend is running - Public folder active");
 });
 
-// Catch-all 404
-app.use("*", (req, res) => {
-  res.status(404).json({ error: "Route not found" });
-});
-
-// ====================== START SERVER ======================
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`🌐 Frontend served from: ../../frontend`);
-  console.log(`📍 Lead endpoint: http://localhost:${PORT}/api/lead`);
+  console.log(`📁 Serving files from: ${path.join(__dirname, '../public')}`);
 });
