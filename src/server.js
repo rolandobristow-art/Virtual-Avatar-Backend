@@ -9,20 +9,6 @@ import chatRouter from "./routes/chat.js";
 import leadRouter from "./routes/lead.js";
 import liveAvatarRouter from "./routes/liveavatar.js";
 
-// ====================== STATIC FILES (FRONTEND) ======================
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Serve the separate frontend folder
-app.use(express.static(path.join(__dirname, '../../frontend')));
-
-// IMPORTANT: Fallback route - serve index.html for all pages
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend/index.html'));
-});
 // Load environment variables
 dotenv.config();
 
@@ -38,6 +24,20 @@ app.use(cors());
 app.use(express.json({ limit: "10mb" }));        // Increased limit for safety
 app.use(express.urlencoded({ extended: true }));
 
+// ====================== STATIC FILES (FRONTEND) ======================
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve the separate frontend folder
+app.use(express.static(path.join(__dirname, '../../frontend')));
+
+// IMPORTANT: Fallback route - serve index.html for all pages
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend/index.html'));
+});
 // ====================== ROUTES ======================
 // API Routes (using routers)
 app.use("/api/chat", chatRouter);
