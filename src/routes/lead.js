@@ -4,7 +4,7 @@ import { sendLeadEmail } from '../services/emailService.js';  // ← Correct
 
 const router = express.Router();
 
-router.post('/api/lead', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const lead = await saveLead(req.body);
 
