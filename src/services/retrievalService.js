@@ -123,9 +123,36 @@ export async function getRelevantKnowledge(userMessage, limit = 3) {
 
   return ranked;
 }
+async function semanticSearch(userMessage, limit = 3) {
+  if (!vectorStore) return [];
+
+  try {
+    const results = await vectorStore.similaritySearch(
+      userMessage,
+      limit
+    );
+
+    return results.map(doc => ({
+      content: doc.pageContent
+    }));
+  } catch (err) {
+    console.error("Semantic search error:", err);
+    return [];
+  }
+}
 
 export async function buildKnowledgeContext(userMessage, limit = 3) {
-  const matches = await getRelevantKnowledge(userMessage, limit);
+const keywordMatches = await getRelevantKnowledge(userMessage, limit);
+
+const semanticMatches = await semanticSearch(
+  userMessage,
+  limit
+);
+
+const matches = [
+  ...keywordMatches,
+  ...semanticMatches
+];
 
   if (!matches.length) {
     return "";
