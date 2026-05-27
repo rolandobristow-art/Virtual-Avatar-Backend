@@ -1,6 +1,10 @@
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -8,9 +12,14 @@ const __dirname = path.dirname(__filename);
 const knowledgePath = path.join(__dirname, "../data/knowledge.json");
 
 let knowledgeCache = null;
+let vectorStore = null;
+
+const embeddings = new OpenAIEmbeddings({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 async function loadKnowledgeFile() {
-  if (knowledgeCache) return knowledgeCache;
+   if (knowledgeCache) return knowledgeCache;
 
   const file = await fs.readFile(knowledgePath, "utf-8");
   const parsed = JSON.parse(file);
@@ -24,7 +33,25 @@ async function loadKnowledgeFile() {
   } else {
     knowledgeCache = [];
   }
+if (!vectorStore && knowledgeCache.length) {
+  console.log("🧠 Building vector store...");
 
+  const splitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 1000,
+    chunkOverlap: 200,
+  });
+
+  const docs = await splitter.createDocuments(
+    knowledgeCache.map(entryToText)
+  );
+
+  vectorStore = await MemoryVectorStore.fromDocuments(
+    docs,
+    embeddings
+  );
+
+  console.log("✅ Vector store ready");
+}
   return knowledgeCache;
 }
 

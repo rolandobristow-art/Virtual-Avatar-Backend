@@ -9,11 +9,17 @@
     "start": "node src/server.js"
   },
   "dependencies": {
+    "@langchain/community": "^0.3.42",
+    "@langchain/core": "^0.3.79",
+    "@langchain/openai": "^0.5.16",
+    "chromadb": "^3.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.6.1",
     "express": "^4.21.2",
     "googleapis": "^171.4.0",
+    "langchain": "^0.3.37",
     "nodemailer": "^8.0.7",
-    "openai": "^4.104.0"
-     }
+    "openai": "^4.104.0",
+    "pdf-parse": "^2.4.5"
+  }
 }
