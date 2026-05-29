@@ -19,10 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 // ====================== STATIC FILES ======================
 app.use(express.static(path.join(__dirname, '../public')));
 
-// ====================== IMPORTANT: SERVE INDEX.HTML FOR ALL ROUTES ======================
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
-});
+
 
 // ====================== API ROUTES (after static files) ======================
 import chatRouter from "./routes/chat.js";
@@ -36,6 +33,11 @@ app.use("/api/liveavatar", liveAvatarRouter);
 // Health check
 app.get("/health", (req, res) => {
   res.send("✅ Healthy");
+});
+
+// ====================== IMPORTANT: SERVE INDEX.HTML FOR ALL ROUTES ======================
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 const PORT = process.env.PORT || 3000;
