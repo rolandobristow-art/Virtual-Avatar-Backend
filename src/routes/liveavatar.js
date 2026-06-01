@@ -3,7 +3,7 @@ import express from "express";
 const router = express.Router();
 
 const LIVEAVATAR_CONFIG = {
-  mode: "LITE",  
+  mode: "FULL",  
   avatar_id: "073b60a9-89a8-45aa-8902-c358f64d2852",
   avatar_persona: {
     voice_id: "864a26b8-bfba-4435-9cc5-1dd593de5ca7",
