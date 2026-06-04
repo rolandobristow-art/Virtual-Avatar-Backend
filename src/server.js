@@ -37,14 +37,10 @@ app.get("/health", (req, res) => {
   res.send("✅ Healthy");
 });
 
-// ====================== IMPORTANT: SERVE INDEX.HTML FOR ALL ROUTES ======================
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
-});
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📁 Serving public/index.html`);
+console.log(`✅ API backend running`);
 });
