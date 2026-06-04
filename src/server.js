@@ -25,10 +25,12 @@ app.use(express.static(path.join(__dirname, '../public')));
 import chatRouter from "./routes/chat.js";
 import leadRouter from "./routes/lead.js";
 import liveAvatarRouter from "./routes/liveavatar.js";
+import ttsRoutes from "./routes/tts.js";
 
 app.use("/api/chat", chatRouter);
 app.use("/api/lead", leadRouter);
 app.use("/api/liveavatar", liveAvatarRouter);
+app.use("/api/tts", ttsRoutes);
 
 // Health check
 app.get("/health", (req, res) => {
