@@ -17,15 +17,16 @@ router.post("/", async (req, res) => {
       });
     }
 
-    const mp3 = await openai.audio.speech.create({
-      model: "tts-1",
-      voice: "nova",
-      input: text,
-    });
+    const speech = await openai.audio.speech.create({
+  model: "tts-1",
+  voice: "nova",
+  input: text,
+  response_format: "pcm",
+});
 
-    const buffer = Buffer.from(await mp3.arrayBuffer());
+    const buffer = Buffer.from(await speech.arrayBuffer());
 
-    res.setHeader("Content-Type", "audio/mpeg");
+    res.setHeader("Content-Type", "audio/pcm");
     res.send(buffer);
 
   } catch (error) {
