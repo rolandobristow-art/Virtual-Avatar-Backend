@@ -36,9 +36,9 @@ function loadKnowledgeBase() {
 ];
 
   for (const knowledgePath of possiblePaths) {
+    console.log("Trying knowledge path:", knowledgePath);
     try {
         if (fs.existsSync(knowledgePath)) {
-          console.log("Trying knowledge path:", knowledgePath);
         const raw = fs.readFileSync(knowledgePath, "utf-8");
         const parsed = JSON.parse(raw);
 
