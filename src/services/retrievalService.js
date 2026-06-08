@@ -9,7 +9,7 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const knowledgePath = path.join(__dirname, "../data/knowledge.json");
+const knowledgePath = path.join(__dirname, "../../Data/knowledge.json");
 
 let knowledgeCache = null;
 let vectorStore = null;
@@ -24,15 +24,20 @@ async function loadKnowledgeFile() {
   const file = await fs.readFile(knowledgePath, "utf-8");
   const parsed = JSON.parse(file);
 
-  if (Array.isArray(parsed)) {
-    knowledgeCache = parsed;
-  } else if (Array.isArray(parsed.items)) {
-    knowledgeCache = parsed.items;
-  } else if (Array.isArray(parsed.knowledge)) {
-    knowledgeCache = parsed.knowledge;
-  } else {
-    knowledgeCache = [];
-  }
+if (Array.isArray(parsed)) {
+  knowledgeCache = parsed;
+} else if (Array.isArray(parsed.items)) {
+  knowledgeCache = parsed.items;
+} else if (Array.isArray(parsed.knowledge)) {
+  knowledgeCache = parsed.knowledge;
+} else if (typeof parsed === "object" && parsed !== null) {
+  knowledgeCache = Object.entries(parsed).map(([key, value]) => ({
+    title: key,
+    content: JSON.stringify(value, null, 2),
+  }));
+} else {
+  knowledgeCache = [];
+}
 if (!vectorStore && knowledgeCache.length) {
   console.log("🧠 Building vector store...");
 
