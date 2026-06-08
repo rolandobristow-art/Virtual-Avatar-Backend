@@ -9,7 +9,7 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const knowledgePath = path.join(__dirname, "../../Data/knowledge.json");
+const knowledgePath = path.join(process.cwd(), "Data", "knowledge.json");
 
 let knowledgeCache = null;
 let vectorStore = null;
@@ -20,6 +20,8 @@ const embeddings = new OpenAIEmbeddings({
 
 async function loadKnowledgeFile() {
    if (knowledgeCache) return knowledgeCache;
+
+console.log("Looking for knowledge at:", knowledgePath);
 
   const file = await fs.readFile(knowledgePath, "utf-8");
   const parsed = JSON.parse(file);
