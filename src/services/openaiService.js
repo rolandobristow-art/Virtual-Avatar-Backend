@@ -22,15 +22,23 @@ let knowledgeBase = "";
 
 function loadKnowledgeBase() {
   const possiblePaths = [
-    path.join(__dirname, "../data/knowledge.json"),        // Standard
-    path.join(__dirname, "../../data/knowledge.json"),     // If inside src/
-    path.join(process.cwd(), "data/knowledge.json"),       // Project root
-    path.join(process.cwd(), "src/data/knowledge.json")    // Render common path
-  ];
+  path.join(process.cwd(), "Data", "knowledge.json"),
+  path.join(process.cwd(), "data", "knowledge.json"),
+
+  path.join(process.cwd(), "src", "Data", "knowledge.json"),
+  path.join(process.cwd(), "src", "data", "knowledge.json"),
+
+  path.join(__dirname, "../../Data/knowledge.json"),
+  path.join(__dirname, "../../data/knowledge.json"),
+
+  path.join(__dirname, "../Data/knowledge.json"),
+  path.join(__dirname, "../data/knowledge.json"),
+];
 
   for (const knowledgePath of possiblePaths) {
     try {
-      if (fs.existsSync(knowledgePath)) {
+        if (fs.existsSync(knowledgePath)) {
+          console.log("Trying knowledge path:", knowledgePath);
         const raw = fs.readFileSync(knowledgePath, "utf-8");
         const parsed = JSON.parse(raw);
 
