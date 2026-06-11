@@ -1,19 +1,16 @@
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,              // mail.virtualavatar.co.za
-  port: Number(process.env.EMAIL_PORT || 587),
-  secure: false,                            // false for port 587
+  host: process.env.EMAIL_HOST,
+  port: Number(process.env.EMAIL_PORT || 465),
+  secure: process.env.EMAIL_SECURE === "true",
   auth: {
-    user: process.env.EMAIL_USER,            // hello@virtualavatar.co.za
-    pass: process.env.EMAIL_PASS,            // Hostking mailbox password
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
-  tls: {
-    rejectUnauthorized: false,
-  },
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
+  connectionTimeout: 15000,
+  greetingTimeout: 15000,
+  socketTimeout: 15000,
 });
 
 export async function sendLeadEmail(lead) {
