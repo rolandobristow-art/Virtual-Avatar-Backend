@@ -9,24 +9,24 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function sendLeadEmail(lead) {
- 
- console.log("EMAIL_USER:", process.env.EMAIL_USER);
+  console.log("EMAIL_USER:", process.env.EMAIL_USER);
   console.log("LEAD_NOTIFY_EMAIL:", process.env.LEAD_NOTIFY_EMAIL);
+  console.log("📧 Attempting to send email...");
 
   try {
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"Virtual Avatar Leads" <${process.env.EMAIL_USER}>`,
       to: process.env.LEAD_NOTIFY_EMAIL || process.env.EMAIL_USER,
       subject: `🔥 New Lead: ${lead.name || "Website Visitor"}`,
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
-          <h2>🆕 New Lead from VirtualAvatare.co.za</h2>
-          
+          <h2>🆕 New Lead from VirtualAvatar.co.za</h2>
+
           <p><strong>Name:</strong> ${lead.name || "N/A"}</p>
           <p><strong>Email:</strong> ${lead.email || "N/A"}</p>
           <p><strong>Business:</strong> ${lead.business || "N/A"}</p>
           <p><strong>Notes:</strong> ${lead.note || "N/A"}</p>
-          
+
           <hr>
           <p><strong>Lead ID:</strong> ${lead.id}</p>
           <p><strong>Time:</strong> ${lead.timestamp}</p>
@@ -34,9 +34,14 @@ export async function sendLeadEmail(lead) {
       `,
     });
 
-    console.log("📧 Lead email sent successfully to", process.env.LEAD_NOTIFY_EMAIL || process.env.EMAIL_USER);
-    return true;
+    console.log("📧 sendMail completed");
+    console.log("📧 Gmail response:", info.response);
+    console.log(
+      "📧 Lead email sent successfully to",
+      process.env.LEAD_NOTIFY_EMAIL || process.env.EMAIL_USER
+    );
 
+    return true;
   } catch (e) {
     console.error("❌ Failed to send lead email:", e.message);
     return false;
