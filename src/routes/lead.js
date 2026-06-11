@@ -17,8 +17,13 @@ router.post('/', async (req, res) => {
 
     // Send email notification
     try {
-      await sendLeadEmail(lead);
-      console.log(`📧 Email notification sent for: ${lead.name}`);
+      const emailSent = await sendLeadEmail(lead);
+
+if (emailSent) {
+  console.log(`📧 Email notification sent for: ${lead.name}`);
+} else {
+  console.warn(`⚠️ Email notification failed for: ${lead.name}`);
+}
     } catch (emailError) {
       console.warn("⚠️ Email failed but lead was saved:", emailError.message);
     }

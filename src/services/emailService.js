@@ -9,6 +9,10 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function sendLeadEmail(lead) {
+ 
+ console.log("EMAIL_USER:", process.env.EMAIL_USER);
+  console.log("LEAD_NOTIFY_EMAIL:", process.env.LEAD_NOTIFY_EMAIL);
+
   try {
     await transporter.sendMail({
       from: `"Virtual Avatar Leads" <${process.env.EMAIL_USER}>`,
