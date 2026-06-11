@@ -1,13 +1,15 @@
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  family: 4,
+  host: process.env.EMAIL_HOST,              // mail.virtualavatar.co.za
+  port: Number(process.env.EMAIL_PORT || 587),
+  secure: false,                            // false for port 587
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_APP_PASSWORD,
+    user: process.env.EMAIL_USER,            // hello@virtualavatar.co.za
+    pass: process.env.EMAIL_PASS,            // Hostking mailbox password
+  },
+  tls: {
+    rejectUnauthorized: false,
   },
   connectionTimeout: 10000,
   greetingTimeout: 10000,
@@ -15,41 +17,33 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function sendLeadEmail(lead) {
-  console.log("EMAIL_USER:", process.env.EMAIL_USER);
-  console.log("LEAD_NOTIFY_EMAIL:", process.env.LEAD_NOTIFY_EMAIL);
-  console.log("📧 Attempting to send email...");
-
   try {
+    console.log("📧 Attempting to send lead email...");
+
     const info = await transporter.sendMail({
       from: `"Virtual Avatar Leads" <${process.env.EMAIL_USER}>`,
       to: process.env.LEAD_NOTIFY_EMAIL || process.env.EMAIL_USER,
-      subject: `🔥 New Lead: ${lead.name || "Website Visitor"}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; padding: 20px;">
-          <h2>🆕 New Lead from VirtualAvatar.co.za</h2>
+      subject: `New Virtual Avatar Lead: ${lead.name || "Website Lead"}`,
+      text: `
+New lead received from Virtual Avatar website:
 
-          <p><strong>Name:</strong> ${lead.name || "N/A"}</p>
-          <p><strong>Email:</strong> ${lead.email || "N/A"}</p>
-          <p><strong>Business:</strong> ${lead.business || "N/A"}</p>
-          <p><strong>Notes:</strong> ${lead.note || "N/A"}</p>
-
-          <hr>
-          <p><strong>Lead ID:</strong> ${lead.id}</p>
-          <p><strong>Time:</strong> ${lead.timestamp}</p>
-        </div>
+Name: ${lead.name || ""}
+Email: ${lead.email || ""}
+Phone: ${lead.phone || ""}
+Business: ${lead.business || ""}
+Intent: ${lead.intent || ""}
+Problem: ${lead.problem || ""}
+Website Status: ${lead.websiteStatus || ""}
+Final Action: ${lead.finalAction || ""}
+Message: ${lead.note || lead.message || ""}
+Created: ${lead.createdAt || new Date().toISOString()}
       `,
     });
 
-    console.log("📧 sendMail completed");
-    console.log("📧 Gmail response:", info.response);
-    console.log(
-      "📧 Lead email sent successfully to",
-      process.env.LEAD_NOTIFY_EMAIL || process.env.EMAIL_USER
-    );
-
+    console.log("✅ Lead email sent:", info.messageId);
     return true;
-  } catch (e) {
-    console.error("❌ Failed to send lead email:", e.message);
+  } catch (error) {
+    console.error("❌ Failed to send lead email:", error.message);
     return false;
   }
 }
