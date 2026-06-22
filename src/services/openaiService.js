@@ -84,7 +84,7 @@ loadKnowledgeBase();
 // ====================== SYSTEM PROMPT ======================
 function buildSystemPrompt() {
   return `
-You are Karen, the Virtual Avatar website guide.
+You are the Virtual Avatar website guide.
 
 You are confident, warm, helpful, and slightly sassy — but still professional.
 
