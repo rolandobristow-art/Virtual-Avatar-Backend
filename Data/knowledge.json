@@ -1,75 +1,144 @@
 {
-  "brand": {
-    "name": "Virtual Avatar",
-    "positioning": "Done-for-you talking website avatars for businesses that want to guide visitors, explain services clearly, and increase conversions.",
-    "tone": [
-      "clear",
-      "warm",
-      "professional",
-      "confident",
-      "direct"
-    ]
-  },
-  "what_it_is": [
-    "A talking avatar placed on a website to greet and guide visitors.",
-    "It helps explain services, answer common questions, and move people toward action.",
-    "It is designed to improve clarity, engagement, and conversions."
-  ],
-  "what_it_is_not": [
-    "It is not positioned as a generic AI assistant.",
-    "It is not just decoration or animation.",
-    "It is not meant to replace real human contact for complex cases."
-  ],
-  "ideal_use_cases": [
-    "Service businesses that need to explain what they do quickly",
-    "Websites with high traffic but low enquiry conversion",
-    "Businesses with offers that visitors often misunderstand",
-    "Landing pages that need a stronger guided call to action",
-    "Agencies wanting an added-value web feature for clients"
-  ],
-  "core_benefits": [
-    "Greets visitors with a clear message",
-    "Explains services in a simple, engaging way",
-    "Keeps people on the page longer",
-    "Guides visitors toward action",
-    "Helps businesses stand out from static websites"
-  ],
-  "common_questions": {
-    "what_does_it_do": "A Virtual Avatar speaks directly to website visitors, explains what the business offers, answers common questions, and guides visitors toward the next step.",
-    "why_not_just_text": "Most visitors skim websites. A clear speaking avatar can communicate faster, hold attention better, and guide visitors more effectively than blocks of text alone.",
-    "is_it_custom": "Yes. The avatar message, script, purpose, and placement are shaped around the business and its goals.",
-    "who_is_it_for": "It works well for businesses that need to build trust quickly and explain services clearly."
-  },
-  "offers": [
-    {
-      "name": "Starter",
-      "price": "$29/month + $299 once off setup, R499/month",
-      "summary": "1 stock avatar, up to 60 seconds, basic AI Chatbot, 2000 messages/month, basic supported setup."
-    },
-    {
-      "name": "Growth",
-      "price": "$59 + $599 once off setup, R975/month",
-      "summary": "3 avatars, up to 90 seconds each, full sales funnel + qualification, Complete lead capture, 10 000 messages/month, lead export + Email noticication, monthly refresh."
-    },
-    {
-      "name": "Scale",
-      "price": "$99 + $999 once off setup, R1650/month",
-      "summary": "10 avatars, up to 90 seconds each, Unlimited messages, Multiple websites, Team accounts (up to 5 users), Priority support, White-label option."
-    }
-  ],
-  "cta": {
-    "primary": "Book a demo",
-    "secondary": "Request pricing",
-    "other": [
-      "See how it could work on your website",
-      "Let us build the right avatar flow for your business"
-    ]
-  },
-  "style_rules": [
-    "Do not call it an assistant",
-    "Do not say bring your website to life",
-    "Lead with business outcomes",
-    "Keep explanations simple and useful",
-    "Use confident, non-hype language"
-  ]
+"brand": {
+"name": "Virtual Avatar",
+"positioning": "A customer engagement platform powered by AI Humans that helps businesses guide visitors, answer questions, generate enquiries, and improve customer experiences.",
+"tone": [
+"clear",
+"warm",
+"professional",
+"confident",
+"direct"
+]
+},
+
+"what_is_an_ai_human": [
+"An AI Human is a digital presenter designed to interact naturally with website visitors.",
+"AI Humans can welcome visitors, answer questions, explain services, and guide people towards action.",
+"They provide consistent communication 24 hours a day.",
+"They are designed to support teams, not replace people."
+],
+
+"what_it_is": [
+"A customer engagement solution powered by AI Humans.",
+"A digital presenter placed on a website to welcome and guide visitors.",
+"A way to explain products, services, and processes more clearly.",
+"A tool that helps businesses improve engagement and generate more qualified enquiries."
+],
+
+"what_it_is_not": [
+"It is not a generic AI assistant.",
+"It is not just decoration or animation.",
+"It is not designed to replace people.",
+"It is not intended to remove human interaction from the customer journey."
+],
+
+"core_benefits": [
+"Improves customer engagement",
+"Answers questions instantly",
+"Generates more qualified enquiries",
+"Provides consistent messaging",
+"Reduces confusion for website visitors",
+"Creates a stronger first impression",
+"Supports sales and customer service teams",
+"Improves onboarding and training experiences"
+],
+
+"ideal_use_cases": [
+"Businesses that need to explain their services clearly",
+"Websites that receive traffic but generate too few enquiries",
+"Businesses with complex offers that require explanation",
+"Companies wanting better customer engagement",
+"Customer onboarding and training environments",
+"Sales and lead generation websites",
+"Agencies wanting added-value solutions for clients"
+],
+
+"industries": {
+"real_estate": [
+"Welcome property buyers and sellers",
+"Explain listings and services",
+"Answer common property questions",
+"Encourage viewing requests",
+"Generate qualified property enquiries"
+],
+
+"hospitality_and_tourism": [
+  "Welcome potential guests",
+  "Explain accommodation and experiences",
+  "Answer common booking questions",
+  "Promote tours and activities",
+  "Increase direct enquiries"
+],
+
+"professional_services": [
+  "Explain services clearly",
+  "Answer common client questions",
+  "Build trust quickly",
+  "Generate consultation enquiries",
+  "Improve client understanding"
+],
+
+"healthcare": [
+  "Guide patients to information",
+  "Explain healthcare services",
+  "Answer common questions",
+  "Improve patient experience",
+  "Support patient communication"
+],
+
+"education_and_training": [
+  "Support onboarding",
+  "Deliver training information consistently",
+  "Answer learner questions",
+  "Improve understanding and engagement",
+  "Reduce repetitive explanations"
+]
+
+},
+
+"common_questions": {
+"what_is_virtual_avatar": "Virtual Avatar is a customer engagement platform powered by AI Humans that helps businesses guide visitors, answer questions, and generate more enquiries.",
+
+"what_is_an_ai_human": "An AI Human is a digital presenter that interacts naturally with visitors, explains information clearly, answers questions, and guides people toward action.",
+
+"what_does_it_do": "A Virtual Avatar welcomes visitors, explains services, answers common questions, captures interest, and guides visitors toward enquiries or bookings.",
+
+"why_not_just_text": "Most visitors skim websites. An AI Human communicates information faster, more clearly, and more engagingly than large blocks of text.",
+
+"is_it_custom": "Yes. The presenter, messaging, script, purpose, and customer journey are tailored to each business.",
+
+"who_is_it_for": "It works well for service businesses, professional firms, hospitality providers, real estate companies, educators, healthcare providers, and organisations that want better customer engagement.",
+
+"does_it_replace_staff": "No. AI Humans are designed to support teams by handling common questions and delivering consistent information, allowing staff to focus on higher-value interactions.",
+
+"can_it_capture_leads": "Yes. AI Humans can guide visitors toward enquiries, bookings, forms, and other lead generation actions.",
+
+"how_does_it_help_conversion": "By helping visitors understand what a business offers, answering questions quickly, and guiding people toward action, AI Humans can improve enquiry generation and conversion rates."
+
+},
+
+"pricing": {
+"policy": "Pricing is tailored to the business, avatar requirements, scripting, integrations, and support needs. Invite visitors to request a recommendation or demo."
+},
+
+"cta": {
+"primary": "Request Your AI Human",
+"secondary": "Request a Recommendation",
+"other": [
+"See how it could work for your business",
+"Let us recommend the right AI Human for your website",
+"Request a personalised demonstration"
+]
+},
+
+"style_rules": [
+"Do not position Virtual Avatar as an AI avatar company",
+"Refer to the solution as AI Humans where appropriate",
+"Lead with business outcomes rather than technology",
+"Avoid hype and exaggerated claims",
+"Keep explanations simple and practical",
+"Focus on engagement, enquiries, customer experience, onboarding, and training",
+"Emphasise that AI Humans support teams rather than replace people",
+"Use confident, conversational language"
+]
 }
