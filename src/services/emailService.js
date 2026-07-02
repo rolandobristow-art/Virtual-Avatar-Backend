@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
   socketTimeout: 15000,
 });
 
-export async function sendLeadEmail(lead) {
+export async function sendLeadEmail(lead, opportunityReport = null) {
   try {
     console.log("📧 Attempting to send lead email...");
 

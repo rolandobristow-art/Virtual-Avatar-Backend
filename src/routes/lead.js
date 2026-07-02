@@ -1,13 +1,22 @@
 import express from 'express';
 import { saveLead } from '../services/leadService.js';        // ← Correct (plural + one level up)
 import { sendLeadEmail } from '../services/emailService.js';  // ← Correct
+import { createOpportunityReport } from "../services/opportunityReportService.js";
 
 const router = express.Router();
 
 router.post('/', async (req, res) => {
   try {
-    const lead = await saveLead(req.body);
+   
+    const opportunityReport = await createOpportunityReport({
+  lead: req.body,
+  conversation: req.body.conversation || [],
+});
 
+const lead = await saveLead({
+  ...req.body,
+  summary: opportunityReport,
+});
     if (!lead) {
       return res.status(500).json({ 
         success: false, 
@@ -17,7 +26,7 @@ router.post('/', async (req, res) => {
 
     // Send email notification
     try {
-      const emailSent = await sendLeadEmail(lead);
+     const emailSent = await sendLeadEmail(lead, opportunityReport);
 
 if (emailSent) {
   console.log(`📧 Email notification sent for: ${lead.name}`);
