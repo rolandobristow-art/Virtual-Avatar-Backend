@@ -29,6 +29,14 @@ export async function saveLead(answers = {}) {
       intent: String(answers.intent || "").trim(),
       problem: String(answers.problem || "").trim(),
       note: String(answers.note || "").trim(),
+
+      conversation:
+  Array.isArray(answers.conversation)
+    ? answers.conversation
+    : [],
+
+summary:
+  answers.summary || null,
     };
 
     leads.push(newLead);
